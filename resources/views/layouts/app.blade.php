@@ -10,13 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="font-[Poppins] antialiased">
-    @include('partials.navbar')
+    @include('components.navbar')
 
     <main>
         @yield('content')
     </main>
 
-    @include('partials.footer')
+    @include('components.footer')
 
     @yield('scripts')
 </body>
