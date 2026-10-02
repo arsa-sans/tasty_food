@@ -12,6 +12,26 @@
 
 <!-- Featured Article Section -->
 <section class="py-16 px-6 md:px-16 lg:px-24 bg-white">
+    @if(count($beritaFoods) > 0)
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start lg:items-stretch">
+        <div class="w-full lg:w-1/2">
+            <img src="{{ $beritaFoods[0]->image_url }}" alt="{{ $beritaFoods[0]->name }}" class="w-full h-[350px] lg:h-full object-cover rounded-2xl shadow-lg">
+        </div>
+        <div class="w-full lg:w-1/2 flex flex-col justify-between py-2">
+            <div>
+                <h2 class="text-3xl md:text-4xl font-bold text-black uppercase mb-6 leading-tight">{{ $beritaFoods[0]->name }}</h2>
+                <p class="text-gray-700 mb-4 text-justify whitespace-pre-line">
+                    {{ $beritaFoods[0]->description }}
+                </p>
+            </div>
+            <div class="self-end mt-4 lg:mt-8">
+                <a href="#" class="inline-block bg-black text-white px-8 py-3 font-semibold uppercase tracking-wide hover:bg-gray-800 transition-colors shadow-md">
+                    BACA SELENGKAPNYA
+                </a>
+            </div>
+        </div>
+    </div>
+    @else
     <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start lg:items-stretch">
         <div class="w-full lg:w-1/2">
             <img src="/assets/anh-nguyen-kcA-c3f_3FE-unsplash.jpg" alt="Makanan Khas Nusantara" class="w-full h-[350px] lg:h-full object-cover rounded-2xl shadow-lg">
@@ -33,6 +53,7 @@
             </div>
         </div>
     </div>
+    @endif
 </section>
 
 <!-- Berita Lainnya Section -->
@@ -43,6 +64,28 @@
     </div>
     
     <div class="flex flex-col gap-8">
+        @if(count($beritaFoods) > 1)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @foreach($beritaFoods->skip(1) as $food)
+            <!-- Card -->
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+                <img src="{{ $food->image_url }}" alt="{{ $food->name }}" class="w-full h-48 object-cover">
+                <div class="p-6 flex-grow flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-xl mb-3 text-black">{{ $food->name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">
+                            {{ Str::limit($food->description, 150) }}
+                        </p>
+                    </div>
+                    <div class="flex justify-between items-center text-amber-500 font-bold text-sm mt-4">
+                        <a href="#" class="hover:text-amber-600 transition-colors">Baca selengkapnya</a>
+                        <span class="text-xl leading-none">...</span>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
         <!-- Row 1 -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Card 1 -->
@@ -184,6 +227,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </section>
 @endsection

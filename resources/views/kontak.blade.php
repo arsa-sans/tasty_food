@@ -20,18 +20,34 @@
     <h2 class="text-2xl md:text-3xl font-bold mb-8 uppercase">Kontak Kami</h2>
     
     <div class="border border-gray-300 rounded-2xl p-6 md:p-8 shadow-sm">
-        <form>
+        @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+            {{ session('success') }}
+        </div>
+        @endif
+        <form method="POST" action="{{ route('kontak.store') }}">
+            @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Left Column -->
                 <div class="flex flex-col gap-6">
-                    <input type="text" placeholder="Telepon" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required />
-                    <input type="text" placeholder="Nama" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required />
-                    <input type="email" placeholder="Email" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required />
+                    <div>
+                        <input type="text" name="phone" placeholder="Telepon" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required value="{{ old('phone') }}" />
+                        @error('phone')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <input type="text" name="name" placeholder="Nama" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required value="{{ old('name') }}" />
+                        @error('name')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="Email" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black" required value="{{ old('email') }}" />
+                        @error('email')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
                 </div>
                 
                 <!-- Right Column -->
-                <div class="h-full">
-                    <textarea placeholder="Message" class="w-full h-full min-h-[150px] md:min-h-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none" required></textarea>
+                <div class="h-full flex flex-col">
+                    <textarea name="message" placeholder="Message" class="w-full h-full min-h-[150px] md:min-h-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-black focus:ring-1 focus:ring-black resize-none" required>{{ old('message') }}</textarea>
+                    @error('message')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
             

@@ -41,6 +41,16 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-6">
+                @php
+                    $colSpans = [
+                        'md:col-span-4', 'md:col-span-2', 'md:col-span-2', 'md:col-span-4',
+                        'md:col-span-3', 'md:col-span-4', 'md:col-span-2', 'md:col-span-3',
+                        'md:col-span-3', 'md:col-span-2', 'md:col-span-2', 'md:col-span-2', 'col-span-2 md:col-span-3'
+                    ];
+                @endphp
+                @forelse($galeriFoods as $index => $food)
+                <img src="{{ $food->image_url }}" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm {{ $colSpans[$index % count($colSpans)] }}" alt="{{ $food->name }}" />
+                @empty
                 <!-- Row 1: 4 images -->
                 <img src="/assets/anna-pelzer-IGfIGP5ONV0-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-4" alt="Gallery 1" />
                 <img src="/assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 2" />
@@ -59,6 +69,7 @@
                 <img src="/assets/sanket-shah-SVA7TyHxojY-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 11" />
                 <img src="/assets/sebastian-coman-photography-eBmyH7oO5wY-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 12" />
                 <img src="/assets/mariana-medvedeva-iNwCO9ycBlc-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm col-span-2 md:col-span-3" alt="Gallery 13" />
+                @endforelse
             </div>
             
         </div>

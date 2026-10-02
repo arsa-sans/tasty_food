@@ -35,6 +35,15 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @forelse($tentangFoods as $food)
+            <div class="text-center flex flex-col items-center">
+                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
+                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
+                </div>
+                <h3 class="text-xl font-bold mb-3 uppercase">{{ $food->name }}</h3>
+                <p class="text-gray-600 text-sm">{{ $food->description }}</p>
+            </div>
+            @empty
             <!-- Card 1 -->
             <div class="text-center flex flex-col items-center">
                 <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
@@ -67,6 +76,7 @@
                 <h3 class="text-xl font-bold mb-3 uppercase">Lorem Ipsum</h3>
                 <p class="text-gray-600 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo pretium hendrerit.</p>
             </div>
+            @endforelse
         </div>
     </div>
 </section>
@@ -80,6 +90,72 @@
         </div>
         
         <!-- News Grid -->
+        @if(count($beritaFoods) > 0)
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Left Large Article -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col h-full">
+                <div class="h-64 sm:h-80 w-full relative">
+                    <img src="{{ $beritaFoods[0]->image_url }}" class="w-full h-full object-cover" alt="{{ $beritaFoods[0]->name }}">
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 uppercase">{{ $beritaFoods[0]->name }}</h3>
+                    <p class="text-gray-600 text-sm mb-4">
+                        {{ $beritaFoods[0]->description }}
+                    </p>
+                    <div class="mt-auto">
+                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
+                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Smaller Articles (Top 2) -->
+            <div class="flex flex-col gap-8">
+                @foreach($beritaFoods->slice(1, 2) as $food)
+                <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
+                    <div class="w-full sm:w-2/5 h-48 sm:h-auto">
+                        <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
+                    </div>
+                    <div class="p-5 w-full sm:w-3/5 flex flex-col">
+                        <h3 class="text-lg font-bold mb-2 uppercase">{{ $food->name }}</h3>
+                        <p class="text-gray-600 text-sm mb-3">
+                            {{ Str::limit($food->description, 100) }}
+                        </p>
+                        <div class="mt-auto">
+                            <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
+                                Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        
+        <!-- Bottom Row (2 articles) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            @foreach($beritaFoods->slice(3, 2) as $food)
+            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
+                <div class="w-full sm:w-2/5 h-48 sm:h-auto">
+                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
+                </div>
+                <div class="p-5 w-full sm:w-3/5 flex flex-col">
+                    <h3 class="text-lg font-bold mb-2 uppercase">{{ $food->name }}</h3>
+                    <p class="text-gray-600 text-sm mb-3">
+                        {{ Str::limit($food->description, 100) }}
+                    </p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
+                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
+                        </a>
+                        <span class="text-amber-500 font-bold text-xl">...</span>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- Left Large Article -->
             <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col h-full">
@@ -178,6 +254,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </section>
 
@@ -191,6 +268,16 @@
         
         <!-- Masonry-like Grid Layout -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            @forelse($galeriFoods as $food)
+                @if($loop->index % 2 == 0)
+                <div class="grid gap-4">
+                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover rounded shadow-lg" alt="{{ $food->name }}" style="min-height: {{ [200, 250, 220, 180][$loop->index / 2 % 4] ?? 200 }}px;">
+                    @if(isset($galeriFoods[$loop->index + 1]))
+                    <img src="{{ $galeriFoods[$loop->index + 1]->image_url }}" class="w-full h-full object-cover rounded shadow-lg" alt="{{ $galeriFoods[$loop->index + 1]->name }}" style="min-height: {{ [250, 200, 230, 270][$loop->index / 2 % 4] ?? 200 }}px;">
+                    @endif
+                </div>
+                @endif
+            @empty
             <div class="grid gap-4">
                 <img src="{{ asset('assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 1" style="min-height: 200px;">
                 <img src="{{ asset('assets/luisa-brimble-HvXEbkcXjSk-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 5" style="min-height: 250px;">
@@ -207,6 +294,7 @@
                 <img src="{{ asset('assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 4" style="min-height: 180px;">
                 <img src="{{ asset('assets/brooke-lark-nBtmglfY0HU-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 8" style="min-height: 270px;">
             </div>
+            @endforelse
         </div>
         
         <div class="text-center mt-12">
