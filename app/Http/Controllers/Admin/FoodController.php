@@ -14,7 +14,7 @@ class FoodController extends Controller
         $query = Food::query();
 
         if ($request->filled('section')) {
-            $query->section($request->section);
+            $query->where('section', $request->section);
         }
 
         if ($request->filled('search')) {
@@ -37,7 +37,7 @@ class FoodController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'section' => 'required|in:tentang,berita,galeri',
+            'section' => 'required|in:tentang,berita,galeri,semua',
             'is_active' => 'boolean',
         ]);
 
@@ -64,7 +64,7 @@ class FoodController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'section' => 'required|in:tentang,berita,galeri',
+            'section' => 'required|in:tentang,berita,galeri,semua',
             'is_active' => 'boolean',
         ]);
 

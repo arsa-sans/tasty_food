@@ -27,7 +27,14 @@ class Food extends Model
 
     public function scopeSection($query, string $section)
     {
-        return $query->where('section', $section);
+        if ($section === 'semua') {
+            return $query->where('section', 'semua');
+        }
+
+        return $query->where(function ($q) use ($section) {
+            $q->where('section', $section)
+              ->orWhere('section', 'semua');
+        });
     }
 
     public function getImageUrlAttribute(): string
