@@ -1,112 +1,118 @@
 @extends('layouts.app')
 
+@section('title', 'Galeri Kami - Tasty Food')
+
 @section('content')
-    <!-- Hero Section -->
-    <div class="relative w-full h-[300px] md:h-[400px]">
-        <img src="/assets/img-1.png" alt="Galeri Background" class="absolute inset-0 w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-12">
-            <h1 class="text-white text-4xl md:text-5xl font-bold uppercase tracking-wide">Galeri Kami</h1>
-        </div>
+<!-- Hero Section -->
+<section class="relative w-full h-[320px] sm:h-[380px] bg-cover bg-center flex items-end" style="background-image: url('{{ asset('assets/Group 70.png') }}');">
+    <!-- Dark Overlay -->
+    <div class="absolute inset-0 bg-black/55"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14 relative z-10 w-full animate-hero-fade">
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white uppercase tracking-tight">GALERI KAMI</h1>
     </div>
+</section>
 
-    <!-- Image Carousel/Slider Section -->
-    <div class="bg-white py-16 md:py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative flex items-center justify-center">
-                <!-- Left Arrow -->
-                <button id="prevBtn" class="absolute left-2 md:left-8 lg:left-16 z-10 p-3 text-white bg-black/40 hover:bg-black/70 rounded-full focus:outline-none transition-colors shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-
-                <!-- Featured Image -->
-                <div class="w-full max-w-5xl px-12 md:px-24 overflow-hidden rounded-3xl h-[300px] md:h-[500px]">
-                    <img id="carouselImage" src="/assets/img-4.png" alt="Featured Food" class="w-full h-full object-cover rounded-3xl shadow-xl transition-opacity duration-300" />
+<!-- Carousel Section -->
+<section class="py-12 sm:py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative rounded-3xl overflow-hidden shadow-xl bg-orange-500 reveal-on-scroll" id="gallery-carousel">
+            <!-- Carousel Slides -->
+            <div class="relative h-[240px] sm:h-[360px] md:h-[420px] w-full overflow-hidden">
+                <div class="carousel-slide absolute inset-0 transition-opacity duration-700 opacity-100 flex items-center justify-center">
+                    <img src="{{ asset('assets/img-4.png') }}" alt="Salmon Dish" class="w-full h-full object-cover">
                 </div>
-
-                <!-- Right Arrow -->
-                <button id="nextBtn" class="absolute right-2 md:right-8 lg:right-16 z-10 p-3 text-white bg-black/40 hover:bg-black/70 rounded-full focus:outline-none transition-colors shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+                <div class="carousel-slide absolute inset-0 transition-opacity duration-700 opacity-0 flex items-center justify-center">
+                    <img src="{{ asset('assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg') }}" alt="Salad Dish" class="w-full h-full object-cover">
+                </div>
+                <div class="carousel-slide absolute inset-0 transition-opacity duration-700 opacity-0 flex items-center justify-center">
+                    <img src="{{ asset('assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg') }}" alt="Feast Spread" class="w-full h-full object-cover">
+                </div>
             </div>
+
+            <!-- Left Arrow -->
+            <button id="prevSlide" aria-label="Previous Slide" class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center shadow-lg text-black hover:bg-gray-100 transition z-20 focus:outline-none">
+                <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <!-- Right Arrow -->
+            <button id="nextSlide" aria-label="Next Slide" class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center shadow-lg text-black hover:bg-gray-100 transition z-20 focus:outline-none">
+                <svg class="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
     </div>
+</section>
 
-    <!-- Photo Grid Gallery Section -->
-    <div class="bg-white pb-24 md:pb-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <div class="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-6">
-                @php
-                    $colSpans = [
-                        'md:col-span-4', 'md:col-span-2', 'md:col-span-2', 'md:col-span-4',
-                        'md:col-span-3', 'md:col-span-4', 'md:col-span-2', 'md:col-span-3',
-                        'md:col-span-3', 'md:col-span-2', 'md:col-span-2', 'md:col-span-2', 'col-span-2 md:col-span-3'
-                    ];
-                @endphp
-                @forelse($galeriFoods as $index => $food)
-                <img src="{{ $food->image_url }}" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm {{ $colSpans[$index % count($colSpans)] }}" alt="{{ $food->name }}" />
-                @empty
-                <!-- Row 1: 4 images -->
-                <img src="/assets/anna-pelzer-IGfIGP5ONV0-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-4" alt="Gallery 1" />
-                <img src="/assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 2" />
-                <img src="/assets/eiliv-aceron-ZuIDLSz3XLg-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 3" />
-                <img src="/assets/ella-olsson-mmnKI8kMxpc-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-4" alt="Gallery 4" />
+<!-- Photo Grid Section (3 rows x 4 cols = 12 photos) -->
+<section class="pb-20 sm:pb-28 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            @php
+                $galleryPhotos = [
+                    'assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg',
+                    'assets/brooke-lark-nBtmglfY0HU-unsplash.jpg',
+                    'assets/anna-pelzer-IGfIGP5ONV0-unsplash.jpg',
+                    'assets/eiliv-aceron-ZuIDLSz3XLg-unsplash.jpg',
+                    'assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg',
+                    'assets/anh-nguyen-kcA-c3f_3FE-unsplash.jpg',
+                    'assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg',
+                    'assets/fathul-abrar-T-qI_MI2EMA-unsplash.jpg',
+                    'assets/sebastian-coman-photography-eBmyH7oO5wY-unsplash.jpg',
+                    'assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg',
+                    'assets/brooke-lark-oaz0raysASk-unsplash.jpg',
+                    'assets/Group 70.png',
+                ];
+            @endphp
 
-                <!-- Row 2: 4 images -->
-                <img src="/assets/fathul-abrar-T-qI_MI2EMA-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-3" alt="Gallery 5" />
-                <img src="/assets/monika-grabkowska-P1aohbiT-EY-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-4" alt="Gallery 6" />
-                <img src="/assets/brooke-lark-oaz0raysASk-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 7" />
-                <img src="/assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-3" alt="Gallery 8" />
-                
-                <!-- Row 3: 5 images -->
-                <img src="/assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-3" alt="Gallery 9" />
-                <img src="/assets/luisa-brimble-HvXEbkcXjSk-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 10" />
-                <img src="/assets/sanket-shah-SVA7TyHxojY-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 11" />
-                <img src="/assets/sebastian-coman-photography-eBmyH7oO5wY-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm md:col-span-2" alt="Gallery 12" />
-                <img src="/assets/mariana-medvedeva-iNwCO9ycBlc-unsplash.jpg" class="w-full h-48 md:h-72 object-cover rounded-2xl shadow-sm col-span-2 md:col-span-3" alt="Gallery 13" />
-                @endforelse
+            @php
+                $displayPhotos = [];
+                if (isset($galeriFoods) && $galeriFoods->count() > 0) {
+                    foreach ($galeriFoods as $gf) {
+                        $displayPhotos[] = $gf->image_url;
+                    }
+                }
+
+                $defIdx = 0;
+                while (count($displayPhotos) < 12) {
+                    $displayPhotos[] = asset($galleryPhotos[$defIdx % count($galleryPhotos)]);
+                    $defIdx++;
+                }
+            @endphp
+
+            @foreach($displayPhotos as $index => $photo)
+            <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-{{ (($index % 4) + 1) * 100 }}">
+                <img src="{{ $photo }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
             </div>
-            
+            @endforeach
         </div>
     </div>
+</section>
 
-    <!-- Simple JavaScript for Carousel -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const images = [
-                '/assets/img-4.png',
-                '/assets/img-1.png',
-                '/assets/img-2.png',
-                '/assets/img-3.png'
-            ];
-            
-            let currentIndex = 0;
-            const imgElement = document.getElementById('carouselImage');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            function updateImage() {
-                imgElement.style.opacity = 0;
-                setTimeout(() => {
-                    imgElement.src = images[currentIndex];
-                    imgElement.style.opacity = 1;
-                }, 150);
-            }
-            
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
-                updateImage();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('opacity-100', i === index);
+                slide.classList.toggle('opacity-0', i !== index);
             });
-            
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
-                updateImage();
-            });
+        }
+
+        document.getElementById('prevSlide')?.addEventListener('click', function() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
         });
-    </script>
+
+        document.getElementById('nextSlide')?.addEventListener('click', function() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        });
+    });
+</script>
 @endsection

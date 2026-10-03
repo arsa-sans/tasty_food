@@ -1,22 +1,28 @@
 @extends('layouts.app')
 
+@section('title', 'Tasty Food - Healthy Tasty Food')
+
 @section('content')
 <!-- Hero Section -->
-<section class="relative h-[600px] sm:h-screen w-full flex items-center bg-black">
-    <!-- background image with overlay -->
-    <div class="absolute inset-0 z-0">
-        <img src="{{ asset('assets/img-1.png') }}" class="w-full h-full object-cover" alt="Hero Image">
-        <div class="absolute inset-0 bg-black/50"></div>
+<section class="relative bg-[#F9F9F9] overflow-hidden min-h-[580px] sm:min-h-[640px] lg:min-h-[720px] flex items-center">
+    <!-- Huge Circular Dish Overflowing Top-Right -->
+    <div class="absolute -top-16 -right-28 sm:-top-24 sm:-right-24 md:-top-32 md:-right-32 lg:-top-44 lg:-right-48 w-[320px] sm:w-[480px] md:w-[620px] lg:w-[820px] xl:w-[940px] pointer-events-none select-none z-10 opacity-30 sm:opacity-100 transition-all duration-700 animate-hero-plate">
+        <img src="{{ asset('assets/img-4-2000x2000.png') }}" alt="Tasty Food Dish" class="w-full h-auto drop-shadow-2xl" fetchpriority="high">
     </div>
-    
-    <div class="container mx-auto px-4 md:px-8 relative z-10">
-        <div class="max-w-2xl">
-            <h2 class="text-4xl md:text-5xl lg:text-6xl text-white font-normal mb-2">HEALTHY</h2>
-            <h1 class="text-5xl md:text-6xl lg:text-7xl text-white font-bold mb-6">TASTY FOOD</h1>
-            <p class="text-white/90 text-sm md:text-base mb-8 max-w-lg">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-36 relative z-20 w-full">
+        <div class="max-w-xl animate-hero-fade">
+            <!-- Gray Accent Line -->
+            <div class="w-14 h-1 bg-gray-400 mb-6"></div>
+
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-light text-black tracking-wide mb-1 uppercase">HEALTHY</h2>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-black tracking-tight mb-6 uppercase">TASTY FOOD</h1>
+
+            <p class="text-gray-500 text-xs sm:text-sm leading-relaxed mb-8 max-w-md">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo, dui diam convallis arcu, eget dictum mi enim eget mauris. Donec interdum, lectus sed sollicitudin lobortis, arcu sapien imperdiet libero.
             </p>
-            <a href="#" class="inline-block bg-amber-500 hover:bg-amber-600 text-black font-semibold py-3 px-8 rounded">
+
+            <a href="{{ route('tentang') }}" class="inline-block bg-black hover:bg-neutral-800 text-white font-bold text-xs sm:text-sm tracking-wider uppercase px-8 py-3.5 transition-all shadow-md">
                 TENTANG KAMI
             </a>
         </div>
@@ -24,282 +30,217 @@
 </section>
 
 <!-- Tentang Kami Section -->
-<section class="py-16 bg-white">
-    <div class="container mx-auto px-4 md:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-2 uppercase">Tentang Kami</h2>
-            <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
-            <p class="mt-6 max-w-3xl mx-auto text-gray-600 text-sm md:text-base">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet. Maecenas sed dui nec ligula faucibus tempus. Donec mattis metus vitae leo pretium hendrerit. Nulla posuere, velit in facilisis tincidunt, magna eros egestas tortor, vitae vestibulum lorem diam non elit.
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            @forelse($tentangFoods as $food)
-            <div class="text-center flex flex-col items-center">
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
-                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase">{{ $food->name }}</h3>
-                <p class="text-gray-600 text-sm">{{ $food->description }}</p>
+<section class="bg-white pt-20 pb-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal-on-scroll">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase mb-3">TENTANG KAMI</h2>
+        <p class="max-w-2xl mx-auto text-gray-500 text-xs sm:text-sm leading-relaxed mb-16">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo, dui diam convallis arcu, eget dictum mi enim eget mauris. Donec interdum, lectus sed sollicitudin lobortis, arcu sapien imperdiet libero.
+        </p>
+    </div>
+
+    <!-- Dark Banner with 4 White Floating Cards -->
+    <div class="relative bg-cover bg-center py-20 px-4 sm:px-6 lg:px-8" style="background-image: url('{{ asset('assets/Group 70.png') }}');">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black/60"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10 pt-10 pb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-8 lg:gap-6">
+                @if(isset($tentangFoods) && $tentangFoods->count() > 0)
+                    @foreach($tentangFoods->take(4) as $index => $food)
+                    <div class="bg-white rounded-3xl p-6 pt-0 text-center flex flex-col items-center shadow-2xl relative reveal-on-scroll delay-{{ ($index + 1) * 100 }}">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 -mt-16 sm:-mt-20 mb-4 rounded-full p-1 flex items-center justify-center">
+                            <img src="{{ $food->image_url }}" alt="{{ $food->name }}" class="w-full h-full object-cover rounded-full drop-shadow-xl" loading="lazy" decoding="async">
+                        </div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-2">{{ $food->name }}</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">{{ $food->description }}</p>
+                    </div>
+                    @endforeach
+                @else
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-3xl p-6 pt-0 text-center flex flex-col items-center shadow-2xl relative reveal-on-scroll delay-100">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 -mt-16 sm:-mt-20 mb-4 rounded-full p-1 flex items-center justify-center">
+                            <img src="{{ asset('assets/img-1.png') }}" alt="Tofu Bowl" class="w-full h-full object-cover rounded-full drop-shadow-xl" loading="lazy" decoding="async">
+                        </div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-2">LOREM IPSUM</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo.</p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-3xl p-6 pt-0 text-center flex flex-col items-center shadow-2xl relative reveal-on-scroll delay-200">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 -mt-16 sm:-mt-20 mb-4 rounded-full p-1 flex items-center justify-center">
+                            <img src="{{ asset('assets/img-2.png') }}" alt="Salmon Broccoli" class="w-full h-full object-cover rounded-full drop-shadow-xl" loading="lazy" decoding="async">
+                        </div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-2">LOREM IPSUM</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo.</p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-3xl p-6 pt-0 text-center flex flex-col items-center shadow-2xl relative reveal-on-scroll delay-300">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 -mt-16 sm:-mt-20 mb-4 rounded-full p-1 flex items-center justify-center">
+                            <img src="{{ asset('assets/img-3.png') }}" alt="Ramen Bowl" class="w-full h-full object-cover rounded-full drop-shadow-xl" loading="lazy" decoding="async">
+                        </div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-2">LOREM IPSUM</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo.</p>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="bg-white rounded-3xl p-6 pt-0 text-center flex flex-col items-center shadow-2xl relative reveal-on-scroll delay-400">
+                        <div class="w-32 h-32 sm:w-36 sm:h-36 -mt-16 sm:-mt-20 mb-4 rounded-full p-1 flex items-center justify-center">
+                            <img src="{{ asset('assets/img-4-2000x2000.png') }}" alt="Platter" class="w-full h-full object-cover rounded-full drop-shadow-xl" loading="lazy" decoding="async">
+                        </div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-2">LOREM IPSUM</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo.</p>
+                    </div>
+                @endif
             </div>
-            @empty
-            <!-- Card 1 -->
-            <div class="text-center flex flex-col items-center">
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
-                    <img src="{{ asset('assets/anna-pelzer-IGfIGP5ONV0-unsplash.jpg') }}" class="w-full h-full object-cover" alt="Food 1">
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase">Lorem Ipsum</h3>
-                <p class="text-gray-600 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo pretium hendrerit.</p>
-            </div>
-            <!-- Card 2 -->
-            <div class="text-center flex flex-col items-center">
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
-                    <img src="{{ asset('assets/brooke-lark-nBtmglfY0HU-unsplash.jpg') }}" class="w-full h-full object-cover" alt="Food 2">
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase">Lorem Ipsum</h3>
-                <p class="text-gray-600 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo pretium hendrerit.</p>
-            </div>
-            <!-- Card 3 -->
-            <div class="text-center flex flex-col items-center">
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
-                    <img src="{{ asset('assets/ella-olsson-mmnKI8kMxpc-unsplash.jpg') }}" class="w-full h-full object-cover" alt="Food 3">
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase">Lorem Ipsum</h3>
-                <p class="text-gray-600 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo pretium hendrerit.</p>
-            </div>
-            <!-- Card 4 -->
-            <div class="text-center flex flex-col items-center">
-                <div class="w-40 h-40 rounded-full overflow-hidden mb-4 border-4 border-white shadow-lg">
-                    <img src="{{ asset('assets/eiliv-aceron-ZuIDLSz3XLg-unsplash.jpg') }}" class="w-full h-full object-cover" alt="Food 4">
-                </div>
-                <h3 class="text-xl font-bold mb-3 uppercase">Lorem Ipsum</h3>
-                <p class="text-gray-600 text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo pretium hendrerit.</p>
-            </div>
-            @endforelse
         </div>
     </div>
 </section>
 
 <!-- Berita Kami Section -->
-<section class="py-16 bg-gray-100">
-    <div class="container mx-auto px-4 md:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-2 uppercase">Berita Kami</h2>
-            <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
-        </div>
-        
-        <!-- News Grid -->
-        @if(count($beritaFoods) > 0)
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- Left Large Article -->
-            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col h-full">
-                <div class="h-64 sm:h-80 w-full relative">
-                    <img src="{{ $beritaFoods[0]->image_url }}" class="w-full h-full object-cover" alt="{{ $beritaFoods[0]->name }}">
-                </div>
-                <div class="p-6 flex-grow flex flex-col">
-                    <h3 class="text-xl md:text-2xl font-bold mb-3 uppercase">{{ $beritaFoods[0]->name }}</h3>
-                    <p class="text-gray-600 text-sm mb-4">
-                        {{ $beritaFoods[0]->description }}
-                    </p>
-                    <div class="mt-auto">
-                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                        </a>
+<section class="bg-[#F9F9F9] py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase text-center mb-12 reveal-on-scroll">BERITA KAMI</h2>
+
+        @php
+            // Default fallbacks matching the exact design
+            $defaultFeatured = (object) [
+                'name' => 'LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo, dui diam convallis arcu, eget dictum mi enim eget mauris. Donec interdum, lectus sed sollicitudin lobortis, arcu sapien imperdiet libero.',
+                'image_url' => asset('assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg'),
+            ];
+
+            $defaultSmall = [
+                (object) [
+                    'name' => 'LOREM IPSUM',
+                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo.',
+                    'image_url' => asset('assets/brooke-lark-oaz0raysASk-unsplash.jpg'),
+                ],
+                (object) [
+                    'name' => 'LOREM IPSUM',
+                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo.',
+                    'image_url' => asset('assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg'),
+                ],
+                (object) [
+                    'name' => 'LOREM IPSUM',
+                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo.',
+                    'image_url' => asset('assets/fathul-abrar-T-qI_MI2EMA-unsplash.jpg'),
+                ],
+                (object) [
+                    'name' => 'LOREM IPSUM',
+                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec mattis metus vitae leo.',
+                    'image_url' => asset('assets/sebastian-coman-photography-eBmyH7oO5wY-unsplash.jpg'),
+                ],
+            ];
+
+            // Priority: newest food item becomes the featured big card!
+            $featured = (isset($beritaFoods) && $beritaFoods->count() > 0) ? $beritaFoods[0] : $defaultFeatured;
+
+            // Next 4 newest items go into the 2x2 grid, supplemented by defaults if fewer than 5 exist
+            $smallCards = [];
+            for ($i = 0; $i < 4; $i++) {
+                if (isset($beritaFoods) && isset($beritaFoods[$i + 1])) {
+                    $smallCards[] = $beritaFoods[$i + 1];
+                } else {
+                    $smallCards[] = $defaultSmall[$i];
+                }
+            }
+        @endphp
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left Large Article (Priority: Newest Item) -->
+            <div class="lg:col-span-6 flex flex-col reveal-on-scroll">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col h-full border border-gray-100 hover:shadow-md transition">
+                    <img src="{{ $featured->image_url }}" alt="{{ $featured->name }}" class="h-64 sm:h-72 lg:h-80 w-full object-cover" loading="lazy" decoding="async">
+                    <div class="p-6 sm:p-8 flex flex-col flex-1 justify-between">
+                        <div>
+                            <h3 class="font-extrabold text-base sm:text-lg text-black uppercase mb-3 leading-snug">
+                                {{ $featured->name }}
+                            </h3>
+                            <p class="text-gray-500 text-xs sm:text-sm leading-relaxed mb-6">
+                                {{ $featured->description }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <a href="{{ route('berita') }}" class="text-xs font-bold text-amber-500 hover:text-amber-600 transition uppercase">
+                                baca selengkapnya
+                            </a>
+                            <span class="text-gray-400 font-bold tracking-widest text-base">...</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Right Smaller Articles (Top 2) -->
-            <div class="flex flex-col gap-8">
-                @foreach($beritaFoods->slice(1, 2) as $food)
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                    <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                        <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
-                    </div>
-                    <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                        <h3 class="text-lg font-bold mb-2 uppercase">{{ $food->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-3">
-                            {{ Str::limit($food->description, 100) }}
-                        </p>
-                        <div class="mt-auto">
-                            <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                                Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                            </a>
+
+            <!-- Right 2x2 Small Articles -->
+            <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @foreach($smallCards as $idx => $card)
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition reveal-on-scroll delay-{{ ($idx + 1) * 100 }}">
+                    <div>
+                        <img src="{{ $card->image_url }}" alt="{{ $card->name }}" class="h-36 sm:h-40 w-full object-cover" loading="lazy" decoding="async">
+                        <div class="p-4 sm:p-5">
+                            <h4 class="font-extrabold text-sm text-black uppercase mb-2 line-clamp-1">{{ $card->name }}</h4>
+                            <p class="text-gray-500 text-xs leading-relaxed line-clamp-2">{{ $card->description }}</p>
                         </div>
+                    </div>
+                    <div class="p-4 sm:p-5 pt-0 flex items-center justify-between">
+                        <a href="{{ route('berita') }}" class="text-xs font-bold text-amber-500 hover:text-amber-600 transition">baca selengkapnya</a>
+                        <span class="text-gray-400 font-bold tracking-widest text-sm">...</span>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
-        
-        <!-- Bottom Row (2 articles) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            @foreach($beritaFoods->slice(3, 2) as $food)
-            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover" alt="{{ $food->name }}">
-                </div>
-                <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 uppercase">{{ $food->name }}</h3>
-                    <p class="text-gray-600 text-sm mb-3">
-                        {{ Str::limit($food->description, 100) }}
-                    </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                        </a>
-                        <span class="text-amber-500 font-bold text-xl">...</span>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-        @else
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <!-- Left Large Article -->
-            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col h-full">
-                <div class="h-64 sm:h-80 w-full relative">
-                    <img src="{{ asset('assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg') }}" class="w-full h-full object-cover" alt="News Main">
-                </div>
-                <div class="p-6 flex-grow flex flex-col">
-                    <h3 class="text-xl md:text-2xl font-bold mb-3 uppercase">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit</h3>
-                    <p class="text-gray-600 text-sm mb-4">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet. Maecenas sed dui nec ligula faucibus tempus. Donec mattis metus vitae leo pretium hendrerit. Nulla posuere, velit in facilisis tincidunt.
-                    </p>
-                    <div class="mt-auto">
-                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Smaller Articles (Top 2) -->
-            <div class="flex flex-col gap-8">
-                <!-- Sub article 1 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                    <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                        <img src="{{ asset('assets/brooke-lark-oaz0raysASk-unsplash.jpg') }}" class="w-full h-full object-cover" alt="News Sub 1">
-                    </div>
-                    <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                        <h3 class="text-lg font-bold mb-2 uppercase">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit</h3>
-                        <p class="text-gray-600 text-sm mb-3">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet.
-                        </p>
-                        <div class="mt-auto">
-                            <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                                Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Sub article 2 -->
-                <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                    <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                        <img src="{{ asset('assets/fathul-abrar-T-qI_MI2EMA-unsplash.jpg') }}" class="w-full h-full object-cover" alt="News Sub 2">
-                    </div>
-                    <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                        <h3 class="text-lg font-bold mb-2 uppercase">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit</h3>
-                        <p class="text-gray-600 text-sm mb-3">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet.
-                        </p>
-                        <div class="mt-auto">
-                            <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                                Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Bottom Row (2 articles) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Bottom article 1 -->
-            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                    <img src="{{ asset('assets/monika-grabkowska-P1aohbiT-EY-unsplash.jpg') }}" class="w-full h-full object-cover" alt="News Bottom 1">
-                </div>
-                <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 uppercase">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit</h3>
-                    <p class="text-gray-600 text-sm mb-3">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet.
-                    </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                        </a>
-                        <span class="text-amber-500 font-bold text-xl">...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Bottom article 2 -->
-            <div class="bg-white rounded-lg overflow-hidden shadow-sm flex flex-col sm:flex-row h-full">
-                <div class="w-full sm:w-2/5 h-48 sm:h-auto">
-                    <img src="{{ asset('assets/sebastian-coman-photography-eBmyH7oO5wY-unsplash.jpg') }}" class="w-full h-full object-cover" alt="News Bottom 2">
-                </div>
-                <div class="p-5 w-full sm:w-3/5 flex flex-col">
-                    <h3 class="text-lg font-bold mb-2 uppercase">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit</h3>
-                    <p class="text-gray-600 text-sm mb-3">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam non nisl ut eros fermentum aliquet.
-                    </p>
-                    <div class="flex justify-between items-center mt-auto">
-                        <a href="#" class="text-amber-500 hover:text-amber-600 font-semibold text-sm inline-flex items-center">
-                            Baca selengkapnya <span class="ml-1 text-xl leading-none">&raquo;</span>
-                        </a>
-                        <span class="text-amber-500 font-bold text-xl">...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
     </div>
 </section>
 
 <!-- Galeri Kami Section -->
-<section class="py-16 bg-zinc-900">
-    <div class="container mx-auto px-4 md:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold mb-2 text-white uppercase">Galeri Kami</h2>
-            <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
-        </div>
-        
-        <!-- Masonry-like Grid Layout -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            @forelse($galeriFoods as $food)
-                @if($loop->index % 2 == 0)
-                <div class="grid gap-4">
-                    <img src="{{ $food->image_url }}" class="w-full h-full object-cover rounded shadow-lg" alt="{{ $food->name }}" style="min-height: {{ [200, 250, 220, 180][$loop->index / 2 % 4] ?? 200 }}px;">
-                    @if(isset($galeriFoods[$loop->index + 1]))
-                    <img src="{{ $galeriFoods[$loop->index + 1]->image_url }}" class="w-full h-full object-cover rounded shadow-lg" alt="{{ $galeriFoods[$loop->index + 1]->name }}" style="min-height: {{ [250, 200, 230, 270][$loop->index / 2 % 4] ?? 200 }}px;">
-                    @endif
+<section class="bg-white py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase text-center mb-12 reveal-on-scroll">GALERI KAMI</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            @if(isset($galeriFoods) && $galeriFoods->count() >= 6)
+                @foreach($galeriFoods->take(6) as $index => $food)
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-{{ ($index + 1) * 100 }}">
+                    <img src="{{ $food->image_url }}" alt="{{ $food->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
-                @endif
-            @empty
-            <div class="grid gap-4">
-                <img src="{{ asset('assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 1" style="min-height: 200px;">
-                <img src="{{ asset('assets/luisa-brimble-HvXEbkcXjSk-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 5" style="min-height: 250px;">
-            </div>
-            <div class="grid gap-4">
-                <img src="{{ asset('assets/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 2" style="min-height: 250px;">
-                <img src="{{ asset('assets/mariana-medvedeva-iNwCO9ycBlc-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 6" style="min-height: 200px;">
-            </div>
-            <div class="grid gap-4">
-                <img src="{{ asset('assets/jonathan-borba-Gkc_xM3VY34-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 3" style="min-height: 220px;">
-                <img src="{{ asset('assets/sanket-shah-SVA7TyHxojY-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 7" style="min-height: 230px;">
-            </div>
-            <div class="grid gap-4">
-                <img src="{{ asset('assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 4" style="min-height: 180px;">
-                <img src="{{ asset('assets/brooke-lark-nBtmglfY0HU-unsplash.jpg') }}" class="w-full h-full object-cover rounded shadow-lg" alt="Gallery 8" style="min-height: 270px;">
-            </div>
-            @endforelse
+                @endforeach
+            @else
+                <!-- Photo 1 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-100">
+                    <img src="{{ asset('assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg') }}" alt="Gallery 1" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+
+                <!-- Photo 2 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-200">
+                    <img src="{{ asset('assets/img-4.png') }}" alt="Gallery 2" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+
+                <!-- Photo 3 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-300">
+                    <img src="{{ asset('assets/anh-nguyen-kcA-c3f_3FE-unsplash.jpg') }}" alt="Gallery 3" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+
+                <!-- Photo 4 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-400">
+                    <img src="{{ asset('assets/ella-olsson-mmnKI8kMxpc-unsplash.jpg') }}" alt="Gallery 4" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+
+                <!-- Photo 5 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-500">
+                    <img src="{{ asset('assets/mariana-medvedeva-iNwCO9ycBlc-unsplash.jpg') }}" alt="Gallery 5" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+
+                <!-- Photo 6 -->
+                <div class="aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 hover:scale-[1.02] reveal-on-scroll delay-600">
+                    <img src="{{ asset('assets/Group 70.png') }}" alt="Gallery 6" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                </div>
+            @endif
         </div>
-        
-        <div class="text-center mt-12">
-            <a href="#" class="inline-block bg-amber-500 hover:bg-amber-600 text-black font-semibold py-3 px-10 rounded uppercase shadow-lg transition duration-300">
-                Lihat Lebih Banyak
+
+        <div class="text-center mt-12 reveal-on-scroll">
+            <a href="{{ route('galeri') }}" class="inline-block bg-black hover:bg-neutral-800 text-white font-bold text-xs sm:text-sm tracking-wider uppercase px-10 py-3.5 transition-all shadow-md">
+                LIHAT LEBIH BANYAK
             </a>
         </div>
     </div>
