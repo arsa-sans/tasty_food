@@ -119,7 +119,11 @@
                             <span class="text-sm font-medium text-gray-800">{{ $food->name }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600 capitalize">{{ $food->section }}</span>
+                            @if($food->section === 'semua')
+                                <span class="text-xs px-2 py-1 rounded bg-purple-100 text-purple-800 font-medium">Semua Section</span>
+                            @else
+                                <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600 capitalize">{{ $food->section }}</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4">
                             @if($food->is_active)

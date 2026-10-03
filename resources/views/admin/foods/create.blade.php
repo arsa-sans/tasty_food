@@ -40,6 +40,7 @@
                     <select name="section" id="section" required
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 @error('section') border-red-500 @enderror">
                         <option value="">Pilih Section...</option>
+                        <option value="semua" {{ old('section') == 'semua' ? 'selected' : '' }}>Semua Section (Tentang, Berita, Galeri)</option>
                         <option value="tentang" {{ old('section') == 'tentang' ? 'selected' : '' }}>Tentang Kami</option>
                         <option value="berita" {{ old('section') == 'berita' ? 'selected' : '' }}>Berita</option>
                         <option value="galeri" {{ old('section') == 'galeri' ? 'selected' : '' }}>Galeri</option>

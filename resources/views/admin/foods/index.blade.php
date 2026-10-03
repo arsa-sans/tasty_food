@@ -16,7 +16,8 @@
         
         <form method="GET" action="{{ route('admin.foods.index') }}" class="flex flex-col sm:flex-row gap-3">
             <select name="section" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
-                <option value="">Semua Section</option>
+                <option value="">Semua Makanan</option>
+                <option value="semua" {{ request('section') == 'semua' ? 'selected' : '' }}>Semua Section</option>
                 <option value="tentang" {{ request('section') == 'tentang' ? 'selected' : '' }}>Tentang Kami</option>
                 <option value="berita" {{ request('section') == 'berita' ? 'selected' : '' }}>Berita</option>
                 <option value="galeri" {{ request('section') == 'galeri' ? 'selected' : '' }}>Galeri</option>
@@ -66,9 +67,15 @@
                         <div class="text-xs text-gray-500 w-48 truncate">{{ $food->description }}</div>
                     </td>
                     <td class="px-6 py-4">
-                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
-                            {{ $food->section }}
-                        </span>
+                        @if($food->section === 'semua')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                Semua Section
+                            </span>
+                        @else
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
+                                {{ $food->section }}
+                            </span>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         @if($food->is_active)
