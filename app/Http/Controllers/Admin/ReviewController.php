@@ -24,11 +24,12 @@ class ReviewController extends Controller
         return view('admin.reviews.show', compact('review'));
     }
 
-    public function destroy(Review $review)
-    {
-        $review->delete();
+    // Tidak ada hapus karena trasparansi
+    // public function destroy(Review $review)
+    // {
+    //     $review->delete();
 
-        return redirect()->route('admin.reviews.index')
-            ->with('success', 'Ulasan berhasil dihapus!');
-    }
+    //     return redirect()->route('admin.reviews.index')
+    //         ->with('success', 'Ulasan berhasil dihapus!');
+    // }
 }
