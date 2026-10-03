@@ -1,49 +1,61 @@
+@php
+    $isHome = request()->routeIs('home');
+    $textColor = $isHome ? 'text-black' : 'text-white';
+    $hoverColor = 'hover:text-amber-500';
+@endphp
+
 <!-- Navigation -->
-<nav class="absolute top-0 left-0 w-full z-50">
+<nav class="absolute top-0 left-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20">
+        <div class="flex items-center justify-between h-24">
             <!-- Logo -->
-            <a href="{{ route('home') }}" class="text-white font-bold text-xl tracking-wider">TASTY FOOD</a>
+            <a href="{{ route('home') }}" class="{{ $textColor }} font-extrabold text-2xl tracking-wider uppercase transition-colors px-10">
+                TASTY FOOD
+            </a>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center space-x-1">
-                <a href="{{ route('home') }}" class="text-white text-sm font-medium px-3 py-2 hover:text-yellow-400 transition {{ request()->routeIs('home') ? 'border-b-2 border-yellow-400' : '' }}">HOME</a>
-                <a href="{{ route('tentang') }}" class="text-white text-sm font-medium px-3 py-2 hover:text-yellow-400 transition {{ request()->routeIs('tentang') ? 'border-b-2 border-yellow-400' : '' }}">TENTANG</a>
-                <a href="{{ route('berita') }}" class="text-white text-sm font-medium px-3 py-2 hover:text-yellow-400 transition {{ request()->routeIs('berita') ? 'border-b-2 border-yellow-400' : '' }}">BERITA</a>
-                <a href="{{ route('galeri') }}" class="text-white text-sm font-medium px-3 py-2 hover:text-yellow-400 transition {{ request()->routeIs('galeri') ? 'border-b-2 border-yellow-400' : '' }}">GALERI</a>
-                <a href="{{ route('kontak') }}" class="text-white text-sm font-medium px-3 py-2 hover:text-yellow-400 transition {{ request()->routeIs('kontak') ? 'border-b-2 border-yellow-400' : '' }}">KONTAK</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{{ route('home') }}" class="{{ $textColor }} text-xs lg:text-sm font-semibold tracking-wider uppercase {{ $hoverColor }} transition-colors">HOME</a>
+                <a href="{{ route('tentang') }}" class="{{ $textColor }} text-xs lg:text-sm font-semibold tracking-wider uppercase {{ $hoverColor }} transition-colors">TENTANG</a>
+                <a href="{{ route('berita') }}" class="{{ $textColor }} text-xs lg:text-sm font-semibold tracking-wider uppercase {{ $hoverColor }} transition-colors">BERITA</a>
+                <a href="{{ route('galeri') }}" class="{{ $textColor }} text-xs lg:text-sm font-semibold tracking-wider uppercase {{ $hoverColor }} transition-colors">GALERI</a>
+                <a href="{{ route('kontak') }}" class="{{ $textColor }} text-xs lg:text-sm font-semibold tracking-wider uppercase {{ $hoverColor }} transition-colors">KONTAK</a>
             </div>
 
             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            <button id="mobile-menu-btn" class="md:hidden {{ $textColor }} p-2 focus:outline-none" aria-label="Toggle Menu">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
         </div>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-black/95 backdrop-blur-sm">
-        <div class="px-4 py-3 space-y-2">
-            <a href="{{ route('home') }}" class="block text-white text-sm font-medium py-2 px-3 hover:bg-white/10 rounded {{ request()->routeIs('home') ? 'text-yellow-400' : '' }}">HOME</a>
-            <a href="{{ route('tentang') }}" class="block text-white text-sm font-medium py-2 px-3 hover:bg-white/10 rounded {{ request()->routeIs('tentang') ? 'text-yellow-400' : '' }}">TENTANG</a>
-            <a href="{{ route('berita') }}" class="block text-white text-sm font-medium py-2 px-3 hover:bg-white/10 rounded {{ request()->routeIs('berita') ? 'text-yellow-400' : '' }}">BERITA</a>
-            <a href="{{ route('galeri') }}" class="block text-white text-sm font-medium py-2 px-3 hover:bg-white/10 rounded {{ request()->routeIs('galeri') ? 'text-yellow-400' : '' }}">GALERI</a>
-            <a href="{{ route('kontak') }}" class="block text-white text-sm font-medium py-2 px-3 hover:bg-white/10 rounded {{ request()->routeIs('kontak') ? 'text-yellow-400' : '' }}">KONTAK</a>
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800">
+        <div class="px-6 py-6 space-y-4">
+            <a href="{{ route('home') }}" class="block text-white text-base font-semibold tracking-wider uppercase hover:text-amber-500 transition-colors {{ request()->routeIs('home') ? 'text-amber-500 font-bold' : '' }}">HOME</a>
+            <a href="{{ route('tentang') }}" class="block text-white text-base font-semibold tracking-wider uppercase hover:text-amber-500 transition-colors {{ request()->routeIs('tentang') ? 'text-amber-500 font-bold' : '' }}">TENTANG</a>
+            <a href="{{ route('berita') }}" class="block text-white text-base font-semibold tracking-wider uppercase hover:text-amber-500 transition-colors {{ request()->routeIs('berita') ? 'text-amber-500 font-bold' : '' }}">BERITA</a>
+            <a href="{{ route('galeri') }}" class="block text-white text-base font-semibold tracking-wider uppercase hover:text-amber-500 transition-colors {{ request()->routeIs('galeri') ? 'text-amber-500 font-bold' : '' }}">GALERI</a>
+            <a href="{{ route('kontak') }}" class="block text-white text-base font-semibold tracking-wider uppercase hover:text-amber-500 transition-colors {{ request()->routeIs('kontak') ? 'text-amber-500 font-bold' : '' }}">KONTAK</a>
         </div>
     </div>
 </nav>
 
 <script>
-    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-        const menu = document.getElementById('mobile-menu');
-        const icon = document.getElementById('menu-icon');
-        menu.classList.toggle('hidden');
-        if (menu.classList.contains('hidden')) {
-            icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
-        } else {
-            icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
-        }
-    });
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    if (menuBtn && mobileMenu && menuIcon) {
+        menuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+            } else {
+                menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+            }
+        });
+    }
 </script>
