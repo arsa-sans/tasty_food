@@ -1,124 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('page-title') - Tasty Food Admin</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8" />
+    <title>@yield('title', 'Tasty Food - Admin Panel')</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+
+    <!-- Fonts and icons -->
+    <script src="{{ asset('assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: [
+                    "Font Awesome 5 Solid",
+                    "Font Awesome 5 Regular",
+                    "Font Awesome 5 Brands",
+                    "simple-line-icons",
+                ],
+                urls: ["{{ asset('assets/css/fonts.min.css') }}"],
+            },
+            active: function () {
+                sessionStorage.fonts = true;
+            },
+        });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        .sidebar .nav > .nav-item a i {
+            width: 25px;
+        }
+        .table-responsive {
+            white-space: nowrap;
+        }
     </style>
-    <!-- AlpineJS for easy UI toggles -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    @stack('styles')
+    @yield('styles')
 </head>
-<body class="bg-gray-100 text-gray-800 antialiased" x-data="{ sidebarOpen: false }">
-
-    <!-- Mobile sidebar overlay -->
-    <div x-show="sidebarOpen" class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden" @click="sidebarOpen = false"></div>
-
-    <!-- Sidebar -->
-    <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-900 lg:translate-x-0">
-        <div class="flex items-center justify-center px-8 py-6 flex-col">
-            <h1 class="text-2xl font-bold text-amber-500 uppercase tracking-wider text-center">Tasty Food</h1>
-            <span class="text-sm text-gray-400 mt-1">Admin Panel</span>
-        </div>
-
-        <nav class="mt-4 flex flex-col space-y-2 px-4">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800 text-white' : '' }}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                Dashboard
-            </a>
-            
-            <a href="{{ route('admin.foods.index') }}" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.foods.*') ? 'bg-gray-800 text-white' : '' }}">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                Kelola Makanan
-            </a>
-
-            @php
-                $unreadReviews = \App\Models\Review::where('is_read', false)->count();
-            @endphp
-            <a href="{{ route('admin.reviews.index') }}" class="flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.reviews.*') ? 'bg-gray-800 text-white' : '' }}">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-                    Ulasan Pengunjung
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
+            <div class="sidebar-logo">
+                <!-- Logo Header -->
+                <div class="logo-header" data-background-color="dark">
+                    <a href="{{ route('admin.dashboard') }}" class="logo text-decoration-none">
+                        <span class="navbar-brand text-white fw-bold fs-4">
+                            <span class="text-warning">Tasty</span> Food
+                        </span>
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar">
+                            <i class="gg-menu-right"></i>
+                        </button>
+                        <button class="btn btn-toggle sidenav-toggler">
+                            <i class="gg-menu-left"></i>
+                        </button>
+                    </div>
+                    <button class="topbar-toggler more">
+                        <i class="gg-more-vertical-alt"></i>
+                    </button>
                 </div>
-                @if($unreadReviews > 0)
-                    <span class="bg-amber-500 text-black text-xs font-bold px-2 py-1 rounded-full">{{ $unreadReviews }}</span>
-                @endif
-            </a>
-            
-            <hr class="border-gray-800 my-2">
-            
-            <a href="{{ route('home') }}" target="_blank" class="flex items-center px-4 py-3 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                Lihat Website
-            </a>
-        </nav>
-
-        <div class="absolute bottom-0 w-full p-4">
-            <form action="{{ route('admin.logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="flex items-center w-full px-4 py-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-lg transition-colors">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                    Logout
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-h-screen lg:ml-64">
-        
-        <!-- Top header -->
-        <header class="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-            <div class="flex items-center">
-                <button @click="sidebarOpen = true" class="text-gray-500 focus:outline-none lg:hidden">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-                <h2 class="text-xl font-semibold text-gray-800 lg:ml-0 ml-4">@yield('page-title')</h2>
+                <!-- End Logo Header -->
             </div>
-            
-            <div class="flex items-center">
-                <span class="text-sm font-medium text-gray-700">Admin</span>
-                <div class="ml-3 w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold">
-                    A
-                </div>
-            </div>
-        </header>
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    <ul class="nav nav-secondary">
+                        <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <a href="{{ route('admin.dashboard') }}">
+                                <i class="fas fa-home"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
 
-        <!-- Content body -->
-        <main class="flex-1 p-6 bg-gray-100 overflow-x-hidden">
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Manajemen Konten</h4>
+                        </li>
 
-            @if(session('error'))
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
-            @endif
+                        <li class="nav-item {{ request()->routeIs('admin.foods.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.foods.index') }}">
+                                <i class="fas fa-utensils"></i>
+                                <p>Kelola Makanan</p>
+                            </a>
+                        </li>
 
-            @if($errors->any())
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                    <ul class="list-disc list-inside">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        @php
+                            $unreadReviewsCount = \App\Models\Review::where('is_read', false)->count();
+                        @endphp
+                        <li class="nav-item {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.reviews.index') }}">
+                                <i class="fas fa-comments"></i>
+                                <p>Ulasan Pengunjung</p>
+                                @if($unreadReviewsCount > 0)
+                                    <span class="badge badge-warning">{{ $unreadReviewsCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Navigasi Luar</h4>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('home') }}" target="_blank">
+                                <i class="fas fa-globe"></i>
+                                <p>Lihat Website</p>
+                                <span class="badge badge-secondary"><i class="fas fa-external-link-alt fa-xs"></i></span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();">
+                                <i class="fas fa-sign-out-alt text-danger"></i>
+                                <p class="text-danger">Logout</p>
+                            </a>
+                            <form id="sidebar-logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
                     </ul>
                 </div>
-            @endif
+            </div>
+        </div>
+        <!-- End Sidebar -->
 
-            @yield('content')
-        </main>
+        <div class="main-panel">
+            <div class="main-header">
+                <div class="main-header-logo">
+                    <!-- Logo Header -->
+                    <div class="logo-header" data-background-color="dark">
+                        <a href="{{ route('admin.dashboard') }}" class="logo text-decoration-none">
+                            <span class="navbar-brand text-white fw-bold">
+                                <span class="text-warning">Tasty</span> Food
+                            </span>
+                        </a>
+                        <div class="nav-toggle">
+                            <button class="btn btn-toggle toggle-sidebar">
+                                <i class="gg-menu-right"></i>
+                            </button>
+                            <button class="btn btn-toggle sidenav-toggler">
+                                <i class="gg-menu-left"></i>
+                            </button>
+                        </div>
+                        <button class="topbar-toggler more">
+                            <i class="gg-more-vertical-alt"></i>
+                        </button>
+                    </div>
+                    <!-- End Logo Header -->
+                </div>
+                <!-- Navbar Header -->
+                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-sm btn-outline-secondary px-3 py-1 me-2" href="{{ route('home') }}" target="_blank">
+                                    <i class="fas fa-external-link-alt me-1"></i> <span class="d-none d-sm-inline">Lihat Website</span>
+                                </a>
+                            </li>
+                            <li class="nav-item topbar-user dropdown hidden-caret">
+                                <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                                    <div class="avatar-sm">
+                                        <img src="{{ asset('assets/img/profile.jpg') }}" alt="Admin Profile" class="avatar-img rounded-circle" />
+                                    </div>
+                                    <span class="profile-username">
+                                        <span class="op-7">Hi,</span>
+                                        <span class="fw-bold">Admin</span>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                    <div class="dropdown-user-scroll scrollbar-outer">
+                                        <li>
+                                            <div class="user-box">
+                                                <div class="avatar-lg">
+                                                    <img src="{{ asset('assets/img/profile.jpg') }}" alt="Profile" class="avatar-img rounded" />
+                                                </div>
+                                                <div class="u-text">
+                                                    <h4>Administrator</h4>
+                                                    <p class="text-muted">Tasty Food Admin</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                                <i class="fas fa-home me-2"></i> Dashboard
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('admin.foods.index') }}">
+                                                <i class="fas fa-utensils me-2"></i> Kelola Makanan
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('admin.reviews.index') }}">
+                                                <i class="fas fa-comments me-2"></i> Ulasan Pengunjung
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="event.preventDefault(); document.getElementById('topbar-logout-form').submit();">
+                                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                            </a>
+                                            <form id="topbar-logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </li>
+                                    </div>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- End Navbar -->
+            </div>
+
+            <div class="container">
+                <div class="page-inner">
+                    <div class="page-header">
+                        <h3 class="fw-bold mb-3">@yield('page-title', 'Dashboard')</h3>
+                        <ul class="breadcrumbs mb-3">
+                            <li class="nav-home">
+                                <a href="{{ route('admin.dashboard') }}">
+                                    <i class="icon-home"></i>
+                                </a>
+                            </li>
+                            @yield('breadcrumbs')
+                        </ul>
+                    </div>
+
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i> Terjadi kesalahan:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @yield('content')
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid d-flex justify-content-between">
+                    <nav class="pull-left">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('home') }}" target="_blank">
+                                    Tasty Food Website
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="copyright">
+                        &copy; {{ date('Y') }} Tasty Food. Template Kaiadmin by <a href="http://www.themekita.com" target="_blank">ThemeKita</a>, Distributed by <a target="_blank" href="https://themewagon.com/">ThemeWagon</a>.
+                    </div>
+                </div>
+            </footer>
+        </div>
     </div>
 
+    <!-- Core JS Files -->
+    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+
+    <!-- Kaiadmin JS -->
+    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
+
+    @stack('scripts')
+    @yield('scripts')
 </body>
 </html>
