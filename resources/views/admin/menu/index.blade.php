@@ -4,12 +4,6 @@
 @section('page-title', 'Menu Makanan')
 @section('page-subtitle', 'Kelola daftar hidangan menu makanan yang dijual di Tasty Food')
 
-@section('breadcrumbs')
-<a href="{{ route('admin.menu.create') }}" class="btn btn-primary btn-round">
-    <i class="fas fa-plus me-1"></i> Tambah Menu
-</a>
-@endsection
-
 @section('content')
 <!-- Filter & Search Bar -->
 <div class="card card-round shadow-sm border-0 mb-4">

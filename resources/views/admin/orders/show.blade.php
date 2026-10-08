@@ -13,9 +13,6 @@
 @endsection
 
 @section('content')
-<!-- Leaflet Map CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-
 <div class="row">
     <!-- Left Column: Order Items & Delivery Location -->
     <div class="col-lg-8">
@@ -99,10 +96,28 @@
 
                 @if($order->latitude && $order->longitude)
                     <div class="mb-2">
-                        <label class="fw-bold text-muted small text-uppercase d-block mb-1">
-                            Titik Koordinat Presisi: <span class="text-dark">{{ $order->latitude }}, {{ $order->longitude }}</span>
+                        <label class="fw-bold text-muted small text-uppercase d-block mb-2">
+                            Titik Koordinat Presisi: <span class="text-dark font-monospace">{{ $order->latitude }}, {{ $order->longitude }}</span>
                         </label>
-                        <div id="admin-order-map" class="rounded-3 border shadow-sm" style="height: 280px; width: 100%;"></div>
+                        <div class="rounded-3 overflow-hidden border shadow-sm" style="height: 320px; width: 100%; background-color: #e5e3df;">
+                            <iframe
+                                src="https://maps.google.com/maps?q={{ $order->latitude }},{{ $order->longitude }}&hl=id&z=16&output=embed"
+                                width="100%"
+                                height="100%"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <div class="mt-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt text-danger me-1"></i> Lokasi pengantaran pelanggan ditandai pada peta Google Maps di atas.
+                            </small>
+                            <a href="https://www.google.com/maps?q={{ $order->latitude }},{{ $order->longitude }}" target="_blank" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-external-link-alt me-1"></i> Buka Rute di Google Maps
+                            </a>
+                        </div>
                     </div>
                 @else
                     <div class="alert alert-secondary mb-0">
@@ -174,6 +189,96 @@
             </div>
         </div>
 
+        <!-- Card Informasi & Verifikasi Pembayaran -->
+        <div class="card card-round shadow-sm mb-4">
+            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold mb-0">
+                    <i class="fas fa-credit-card text-success me-2"></i> Metode & Pembayaran
+                </h5>
+                <span class="badge {{ $order->status_pembayaran_badge_class }}">
+                    {{ $order->status_pembayaran_label }}
+                </span>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <span class="text-muted small d-block">Metode yang Dipilih:</span>
+                    <strong class="fs-6 text-dark d-flex align-items-center gap-2 mt-1">
+                        @if($order->tipe_pembayaran === 'cash')
+                            <i class="fas fa-money-bill-wave text-warning"></i>
+                        @elseif($order->tipe_pembayaran === 'e_wallet')
+                            <i class="fas fa-qrcode text-primary"></i>
+                        @else
+                            <i class="fas fa-university text-success"></i>
+                        @endif
+                        {{ $order->metode_pembayaran ?? 'Cash On Delivery' }}
+                    </strong>
+                    <small class="text-muted text-capitalize">Tipe: {{ str_replace('_', ' ', $order->tipe_pembayaran ?? 'cash') }}</small>
+                </div>
+
+                @if($order->paymentMethod && $order->paymentMethod->nomor_rekening && $order->tipe_pembayaran !== 'cash')
+                <div class="p-2.5 bg-light rounded border mb-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted d-block">
+                            {{ $order->tipe_pembayaran === 'e_wallet' ? 'No. HP / Akun E-Wallet:' : 'No. Rekening Restoran:' }}
+                        </small>
+                        <strong class="text-dark font-monospace fs-6">{{ $order->paymentMethod->nomor_rekening }}</strong>
+                        @if($order->paymentMethod->atas_nama)
+                            <small class="text-muted d-block">a.n. {{ $order->paymentMethod->atas_nama }}</small>
+                        @endif
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText('{{ $order->paymentMethod->nomor_rekening }}'); this.innerText='Tersalin!'; setTimeout(()=>this.innerText='Salin', 2000);">
+                        <i class="fas fa-copy me-1"></i> Salin
+                    </button>
+                </div>
+                @endif
+
+                <!-- Bukti Pembayaran Screenshot Preview -->
+                <div class="mb-3">
+                    <span class="text-muted small d-block mb-1">Bukti Transfer (Screenshot):</span>
+                    @if($order->bukti_pembayaran_url)
+                        <div class="p-2 bg-light rounded border text-center">
+                            <a href="{{ $order->bukti_pembayaran_url }}" target="_blank" title="Klik untuk memperbesar screenshot">
+                                <img src="{{ $order->bukti_pembayaran_url }}" alt="Bukti Pembayaran" class="img-fluid rounded border shadow-sm" style="max-height: 220px; object-fit: contain;">
+                            </a>
+                            <div class="mt-2">
+                                <a href="{{ $order->bukti_pembayaran_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i> Buka Gambar Penuh
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        @if($order->tipe_pembayaran === 'cash')
+                            <div class="alert alert-secondary py-2 px-3 small mb-0">
+                                <i class="fas fa-info-circle me-1"></i> Cash On Delivery — Pelanggan membayar tunai saat kurir tiba.
+                            </div>
+                        @else
+                            <div class="alert alert-warning py-2 px-3 small mb-0">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Pelanggan belum mengunggah bukti pembayaran.
+                            </div>
+                        @endif
+                    @endif
+                </div>
+
+                <!-- Form Verifikasi Pembayaran oleh Admin -->
+                <form action="{{ route('admin.orders.update-payment-status', $order->id) }}" method="POST" class="pt-2 border-top">
+                    @csrf
+                    @method('PUT')
+                    <label for="status_pembayaran" class="form-label small fw-bold text-muted text-uppercase">Ubah Status Pembayaran:</label>
+                    <div class="input-group">
+                        <select name="status_pembayaran" id="status_pembayaran" class="form-select form-select-sm">
+                            <option value="belum_bayar" {{ $order->status_pembayaran === 'belum_bayar' ? 'selected' : '' }}>Belum Dibayar</option>
+                            <option value="menunggu_verifikasi" {{ $order->status_pembayaran === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                            <option value="lunas" {{ $order->status_pembayaran === 'lunas' ? 'selected' : '' }}>Lunas (Diverifikasi)</option>
+                            <option value="ditolak" {{ $order->status_pembayaran === 'ditolak' ? 'selected' : '' }}>Bukti Ditolak / Tidak Valid</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i> Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Card Konfirmasi Penerimaan & Rating Pelanggan -->
         @if($order->is_diterima)
         <div class="card card-round shadow-sm border-2 border-success mb-4">
@@ -241,6 +346,17 @@
                 <div class="mb-3">
                     <span class="text-muted small d-block">Nama Lengkap</span>
                     <strong class="fs-6 text-dark">{{ $order->nama_pelanggan }}</strong>
+                    @if($order->user)
+                        <div class="mt-1">
+                            <span class="badge bg-success text-white small">
+                                <i class="fas fa-user-check me-1"></i> User Terdaftar: {{ $order->user->name }} (ID #{{ $order->user_id }})
+                            </span>
+                        </div>
+                    @else
+                        <div class="mt-1">
+                            <span class="badge bg-secondary text-white small">Tamu (Tanpa Akun)</span>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="mb-3">
@@ -272,20 +388,6 @@
         </div>
     </div>
 </div>
-
-@if($order->latitude && $order->longitude)
-<!-- Leaflet Map JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const lat = {{ $order->latitude }};
-    const lng = {{ $order->longitude }};
-    const map = L.map('admin-order-map').setView([lat, lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-    L.marker([lat, lng]).addTo(map).bindPopup('<b>Tujuan Pengantaran:</b><br>{{ addslashes($order->nama_pelanggan) }}<br>{{ addslashes($order->alamat_lengkap) }}').openPopup();
-});
-</script>
-@endif
 
 <script>
 function autoFillKeterangan(status) {

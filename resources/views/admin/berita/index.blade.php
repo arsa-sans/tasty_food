@@ -4,12 +4,6 @@
 @section('page-title', 'All Berita')
 @section('page-subtitle', 'Kelola semua berita dan artikel Tasty Food')
 
-@section('breadcrumbs')
-<a href="{{ route('admin.berita.create') }}" class="btn btn-primary btn-round">
-    <i class="fas fa-plus me-1"></i> Tambah Berita
-</a>
-@endsection
-
 @section('content')
 <div class="row g-4 mb-4">
     <!-- Card Tambah Berita (First Card) -->

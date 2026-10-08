@@ -91,7 +91,10 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <span class="text-success fw-bold">{{ $ord->formatted_total }}</span>
+                                    <span class="text-success fw-bold d-block">{{ $ord->formatted_total }}</span>
+                                    <span class="badge {{ $ord->status_pembayaran_badge_class }} text-truncate" style="max-width: 130px; font-size: 10px;" title="{{ $ord->metode_pembayaran }} - {{ $ord->status_pembayaran_label }}">
+                                        {{ $ord->metode_pembayaran ?? 'COD' }} ({{ $ord->status_pembayaran_label }})
+                                    </span>
                                 </td>
                                 <td>
                                     <span class="badge {{ $ord->status_badge_class }} d-block mb-1">

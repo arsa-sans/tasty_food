@@ -4,12 +4,6 @@
 @section('page-title', 'All Galeri')
 @section('page-subtitle', 'Kelola semua dokumentasi dan galeri foto makanan Tasty Food')
 
-@section('breadcrumbs')
-<a href="{{ route('admin.galeri.create') }}" class="btn btn-primary btn-round">
-    <i class="fas fa-plus me-1"></i> Tambah Galeri
-</a>
-@endsection
-
 @section('content')
 <!-- Bootstrap Carousel on top (matching live site) -->
 @if($galeris->count() > 0)
