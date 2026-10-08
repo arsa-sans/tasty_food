@@ -11,7 +11,9 @@ use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Middleware\AdminAuth;
 
 // ==============================
@@ -32,6 +34,7 @@ Route::match(['get', 'post'], '/keranjang/tambah/{menu}', [CartController::class
 Route::post('/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/keranjang/hapus/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/keranjang/kosongkan', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/keranjang/sync', [CartController::class, 'sync'])->name('cart.sync');
 
 // Checkout & Pelacakan Pesanan
 Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
@@ -53,8 +56,14 @@ Route::get('/kontak', function () {
 
 Route::post('/kontak', [ContactController::class, 'store'])->name('kontak.store');
 
-// Top-level logout alias matching remote site form
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// ==============================
+// PUBLIC USER AUTHENTICATION
+// ==============================
+Route::get('/login', [UserAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserAuthController::class, 'login'])->name('login.submit');
+Route::get('/register', [UserAuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserAuthController::class, 'register'])->name('register.submit');
+Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 // ==============================
 // ADMIN ROUTES
@@ -73,10 +82,14 @@ Route::prefix('admin')->group(function () {
         // Menu Makanan CRUD
         Route::resource('menu', MenuController::class)->names('admin.menu');
 
+        // Metode Pembayaran CRUD
+        Route::resource('payment-methods', PaymentMethodController::class)->names('admin.payment-methods');
+
         // Pesanan Pelanggan (Orders Management & Tracking Lifecycle)
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
         Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
         Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update-status');
+        Route::put('/orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('admin.orders.update-payment-status');
         Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
 
         // Berita CRUD (uses slug)
