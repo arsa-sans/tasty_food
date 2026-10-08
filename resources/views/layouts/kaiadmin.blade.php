@@ -137,6 +137,29 @@
                             </div>
                         </li>
 
+                        <!-- Metode Pembayaran CRUD -->
+                        <li class="nav-item {{ request()->routeIs('admin.payment-methods.*') ? 'active submenu' : '' }}">
+                            <a data-bs-toggle="collapse" href="#paymentMethodsMenu" class="{{ request()->routeIs('admin.payment-methods.*') ? '' : 'collapsed' }}">
+                                <i class="fas fa-credit-card"></i>
+                                <p>Metode Pembayaran</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse {{ request()->routeIs('admin.payment-methods.*') ? 'show' : '' }}" id="paymentMethodsMenu">
+                                <ul class="nav nav-collapse">
+                                    <li class="{{ request()->routeIs('admin.payment-methods.index') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.payment-methods.index') }}">
+                                            <span class="sub-item">Daftar Metode</span>
+                                        </a>
+                                    </li>
+                                    <li class="{{ request()->routeIs('admin.payment-methods.create') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.payment-methods.create') }}">
+                                            <span class="sub-item">Tambah Metode</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                         <!-- Website Management Section -->
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
