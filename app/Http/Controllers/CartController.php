@@ -129,4 +129,61 @@ class CartController extends Controller
         session()->forget('cart');
         return redirect()->route('cart.index')->with('success', 'Keranjang telah dikosongkan.');
     }
+
+    /**
+     * Synchronize entire cart from multi-selection on menu page.
+     */
+    public function sync(Request $request)
+    {
+        $items = $request->input('items', []);
+        if (is_string($items)) {
+            $items = json_decode($items, true) ?: [];
+        }
+
+        $cart = [];
+        if (is_array($items)) {
+            foreach ($items as $menuId => $qty) {
+                $qty = (int) $qty;
+                if ($qty > 0) {
+                    $menu = Menu::find($menuId);
+                    if ($menu && $menu->is_tersedia) {
+                        $cart[$menu->id] = [
+                            'id' => $menu->id,
+                            'nama' => $menu->nama,
+                            'slug' => $menu->slug,
+                            'kategori' => $menu->kategori,
+                            'harga' => (float) $menu->harga,
+                            'image_url' => $menu->image_url,
+                            'quantity' => $qty,
+                        ];
+                    }
+                }
+            }
+        }
+
+        session()->put('cart', $cart);
+
+        $totalCount = array_sum(array_column($cart, 'quantity'));
+        $totalPrice = 0;
+        foreach ($cart as $item) {
+            $totalPrice += $item['harga'] * $item['quantity'];
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'cart_count' => $totalCount,
+                'menu_count' => count($cart),
+                'total_price' => $totalPrice,
+                'formatted_total' => 'Rp ' . number_format($totalPrice, 0, ',', '.'),
+            ]);
+        }
+
+        $redirectTo = $request->input('redirect_to', 'cart');
+        if ($redirectTo === 'checkout') {
+            return redirect()->route('checkout');
+        }
+
+        return redirect()->route('cart.index');
+    }
 }

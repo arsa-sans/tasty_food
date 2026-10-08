@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -50,7 +53,10 @@ class OrderController extends Controller
             $total += $item['harga'] * $item['quantity'];
         }
 
-        return view('checkout', compact('cart', 'total'));
+        $paymentMethods = PaymentMethod::aktif()->get();
+        $user = Auth::user();
+
+        return view('checkout', compact('cart', 'total', 'paymentMethods', 'user'));
     }
 
     /**
@@ -64,7 +70,13 @@ class OrderController extends Controller
             return redirect()->route('menu')->with('error', 'Keranjang belanja Anda kosong.');
         }
 
-        $validated = $request->validate([
+        // Fetch selected payment method
+        $paymentMethod = null;
+        if ($request->filled('payment_method_id')) {
+            $paymentMethod = PaymentMethod::where('is_aktif', true)->find($request->payment_method_id);
+        }
+
+        $rules = [
             'nama_pelanggan' => 'required|string|max:255',
             'telepon' => 'required|string|max:30',
             'email' => 'nullable|email|max:255',
@@ -72,15 +84,55 @@ class OrderController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'catatan' => 'nullable|string|max:1000',
-        ], [
+            'payment_method_id' => 'required|exists:payment_methods,id',
+        ];
+
+        // Conditional validation: if e_wallet or bank, proof upload is required
+        if ($paymentMethod && $paymentMethod->tipe !== 'cash') {
+            $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg,webp|max:5120';
+        } else {
+            $rules['bukti_pembayaran'] = 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120';
+        }
+
+        $messages = [
             'nama_pelanggan.required' => 'Nama lengkap wajib diisi.',
             'telepon.required' => 'Nomor WhatsApp / telepon wajib diisi untuk konfirmasi kurir.',
             'alamat_lengkap.required' => 'Alamat pengantaran lengkap wajib diisi.',
-        ]);
+            'payment_method_id.required' => 'Silakan pilih metode pembayaran yang Anda inginkan.',
+            'payment_method_id.exists' => 'Metode pembayaran yang dipilih tidak valid atau sudah nonaktif.',
+            'bukti_pembayaran.required' => 'Foto / screenshot bukti pembayaran wajib diunggah untuk metode transfer bank atau e-wallet/QRIS.',
+            'bukti_pembayaran.image' => 'Bukti pembayaran harus berupa gambar/foto.',
+            'bukti_pembayaran.mimes' => 'Format file bukti pembayaran harus JPG, JPEG, PNG, atau WEBP.',
+            'bukti_pembayaran.max' => 'Ukuran foto bukti pembayaran maksimal 5MB.',
+        ];
+
+        $validated = $request->validate($rules, $messages);
 
         $totalHarga = 0;
         foreach ($cart as $item) {
             $totalHarga += $item['harga'] * $item['quantity'];
+        }
+
+        // Handle screenshot / proof upload
+        $buktiPath = null;
+        if ($request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran');
+            $filename = 'bukti_' . time() . '_' . Str::random(20) . '.' . $file->getClientOriginalExtension();
+
+            $storageDir = storage_path('app/public/bukti_pembayaran');
+            $publicDir = public_path('storage/bukti_pembayaran');
+
+            if (!File::isDirectory($storageDir)) {
+                File::makeDirectory($storageDir, 0755, true, true);
+            }
+            if (!File::isDirectory($publicDir)) {
+                File::makeDirectory($publicDir, 0755, true, true);
+            }
+
+            $file->move($storageDir, $filename);
+            File::copy($storageDir . '/' . $filename, $publicDir . '/' . $filename);
+
+            $buktiPath = 'bukti_pembayaran/' . $filename;
         }
 
         // Generate unique order code: TF-YYYYMMDD-XXXX
@@ -89,7 +141,10 @@ class OrderController extends Controller
             $orderCode = 'TF-' . date('Ymd') . '-' . strtoupper(Str::random(5));
         }
 
+        $isNonCash = $paymentMethod && $paymentMethod->tipe !== 'cash';
+
         $order = Order::create([
+            'user_id' => Auth::id(), // Tautkan ke user jika sedang login
             'order_code' => $orderCode,
             'nama_pelanggan' => $validated['nama_pelanggan'],
             'telepon' => $validated['telepon'],
@@ -101,6 +156,11 @@ class OrderController extends Controller
             'total_harga' => $totalHarga,
             'status' => 'menunggu_konfirmasi',
             'keterangan_admin' => 'Pesanan baru diterima. Menunggu konfirmasi dari pihak restoran.',
+            'payment_method_id' => $paymentMethod?->id,
+            'metode_pembayaran' => $paymentMethod?->nama ?? 'Cash On Delivery',
+            'tipe_pembayaran' => $paymentMethod?->tipe ?? 'cash',
+            'bukti_pembayaran' => $buktiPath,
+            'status_pembayaran' => $isNonCash ? 'menunggu_verifikasi' : 'belum_bayar',
         ]);
 
         // Save order items
@@ -128,7 +188,7 @@ class OrderController extends Controller
      */
     public function track($order_code)
     {
-        $order = Order::with('items')->where('order_code', $order_code)->firstOrFail();
+        $order = Order::with(['items', 'paymentMethod'])->where('order_code', $order_code)->firstOrFail();
 
         return view('order-track', compact('order'));
     }
@@ -184,28 +244,40 @@ class OrderController extends Controller
      */
     public function history(Request $request)
     {
-        $sessionCodes = session()->get('order_history', []);
         $search = trim($request->input('search', ''));
+        $sessionCodes = session()->get('order_history', []);
+        $isLoggedIn = Auth::check();
 
-        if (!empty($search)) {
-            $orders = Order::with('items')
-                ->where(function ($q) use ($search) {
+        $query = Order::with('items')->latest();
+
+        if ($isLoggedIn) {
+            // Pengguna yang sudah login: tampilkan seluruh riwayat pesanan milik user ini
+            $query->where('user_id', Auth::id());
+
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
                     $q->where('order_code', 'like', "%{$search}%")
                       ->orWhere('telepon', 'like', "%{$search}%")
                       ->orWhere('nama_pelanggan', 'like', "%{$search}%");
-                })
-                ->latest()
-                ->paginate(8)
-                ->withQueryString();
-        } elseif (!empty($sessionCodes)) {
-            $orders = Order::with('items')
-                ->whereIn('order_code', $sessionCodes)
-                ->latest()
-                ->paginate(8);
+                });
+            }
+
+            $orders = $query->paginate(8)->withQueryString();
         } else {
-            $orders = Order::with('items')->latest()->take(0)->paginate(8);
+            // Pengunjung tamu (belum login): gunakan pencarian kode atau sesi lokal
+            if (!empty($search)) {
+                $orders = $query->where(function ($q) use ($search) {
+                    $q->where('order_code', 'like', "%{$search}%")
+                      ->orWhere('telepon', 'like', "%{$search}%")
+                      ->orWhere('nama_pelanggan', 'like', "%{$search}%");
+                })->paginate(8)->withQueryString();
+            } elseif (!empty($sessionCodes)) {
+                $orders = $query->whereIn('order_code', $sessionCodes)->paginate(8);
+            } else {
+                $orders = $query->whereRaw('1 = 0')->paginate(8);
+            }
         }
 
-        return view('order-history', compact('orders', 'search', 'sessionCodes'));
+        return view('order-history', compact('orders', 'search', 'sessionCodes', 'isLoggedIn'));
     }
 }

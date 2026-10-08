@@ -35,7 +35,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load('items.menu');
+        $order->load(['items.menu', 'paymentMethod', 'user']);
         return view('admin.orders.show', compact('order'));
     }
 
@@ -62,6 +62,20 @@ class OrderController extends Controller
 
         return redirect()->route('admin.orders.show', $order->id)
             ->with('success', "Status pesanan {$order->order_code} berhasil diperbarui menjadi: " . $order->status_label);
+    }
+
+    public function updatePaymentStatus(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'status_pembayaran' => 'required|in:belum_bayar,menunggu_verifikasi,lunas,ditolak',
+        ]);
+
+        $order->update([
+            'status_pembayaran' => $validated['status_pembayaran'],
+        ]);
+
+        return redirect()->route('admin.orders.show', $order->id)
+            ->with('success', "Status pembayaran pesanan {$order->order_code} berhasil diperbarui menjadi: " . $order->status_pembayaran_label);
     }
 
     public function destroy(Order $order)
