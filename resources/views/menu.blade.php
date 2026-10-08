@@ -1,3 +1,9 @@
+@php
+    $isHome = request()->routeIs('home');
+    $textColor = $isHome ? 'text-white' : 'text-black';
+    $hoverColor = 'hover:text-amber-500';
+    $cartCount = array_sum(array_column(session()->get('cart', []), 'quantity'));
+@endphp
 @extends('layouts.app')
 
 @section('title', 'Menu Makanan & Pemesanan - Tasty Food')
@@ -10,12 +16,14 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 sm:pb-14 relative z-10 w-full animate-hero-fade">
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white uppercase tracking-tight">MENU MAKANAN</h1>
-        <p class="text-gray-300 text-xs sm:text-sm mt-2 max-w-xl">Pilih hidangan favorit khas Nusantara dari Tasty Food dan pesan secara praktis diantar langsung ke lokasi Anda.</p>
+        <p class="text-gray-300 text-xs sm:text-sm mt-2 max-w-xl">
+            Pilih hidangan favorit khas Nusantara dari Tasty Food dan pesan secara praktis diantar langsung ke lokasi Anda.
+        </p>
     </div>
 </section>
 
 <!-- Menu Listing Section -->
-<section class="py-14 sm:py-20 bg-[#F9F9F9] pb-28">
+<section class="py-14 sm:py-20 bg-[#F9F9F9] pb-32">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         @if(session('success'))
@@ -55,6 +63,20 @@
                         {{ $cat }}
                     </a>
                 @endforeach
+                <a href="{{ route('order.history', ['search' => request('search')]) }}" class="px-5 py-2 rounded-full text-xs font-bold uppercase transition bg-gray-100 text-gray-700 hover:bg-gray-200">
+                    Riwayat Pemesanan
+                </a>
+                <!-- Cart Icon Button -->
+                <a href="{{ route('cart.index') }}" class="relative inline-flex items-center {{ $textColor }} {{ $hoverColor }} transition-colors p-2" title="Keranjang Pesanan">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    @if($cartCount > 0)
+                        <span class="absolute -top-1 -right-1 bg-amber-500 text-black text-[10px] font-extrabold rounded-full h-5 w-5 flex items-center justify-center shadow-md animate-pulse">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </a>
             </div>
 
             <!-- Search Input -->
@@ -72,10 +94,32 @@
             </form>
         </div>
 
+        @php
+            $sessionCart = session()->get('cart', []);
+            $initialCartMap = [];
+            foreach ($sessionCart as $item) {
+                if (isset($item['id']) && isset($item['quantity'])) {
+                    $initialCartMap[$item['id']] = (int) $item['quantity'];
+                }
+            }
+            $menuPriceMap = [];
+            foreach ($menus as $m) {
+                $menuPriceMap[$m->id] = (float) $m->harga;
+            }
+            $cartTotalQty = array_sum($initialCartMap);
+            $cartTotalHarga = 0;
+            foreach ($sessionCart as $c) {
+                $cartTotalHarga += $c['harga'] * $c['quantity'];
+            }
+        @endphp
+
         <!-- Menu Cards Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
             @forelse($menus as $menu)
-            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col group">
+            @php
+                $initialQty = $initialCartMap[$menu->id] ?? 0;
+            @endphp
+            <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col group" id="card-menu-{{ $menu->id }}">
                 <!-- Image with Category Badge -->
                 <div class="relative h-52 sm:h-56 w-full overflow-hidden bg-gray-100">
                     <img src="{{ $menu->image_url }}" alt="{{ $menu->nama }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
@@ -103,32 +147,36 @@
                         </p>
                     </div>
 
-                    <!-- Action: Portion Selector & Order Button -->
+                    <!-- Action: Instant One-Click Add & Quantity Counter -->
                     <div class="pt-3 border-t border-gray-100">
                         @if($menu->is_tersedia)
-                            <form action="{{ route('cart.add', $menu->id) }}" method="POST">
-                                @csrf
-                                <div class="flex items-center space-x-2">
-                                    <!-- Portion Selector (- / Qty / +) -->
-                                    <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 h-10 flex-shrink-0">
-                                        <button type="button" onclick="decrementQty({{ $menu->id }})" class="w-7 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 font-bold transition text-sm">
-                                            &minus;
-                                        </button>
-                                        <input type="number" name="quantity" id="qty-{{ $menu->id }}" value="1" min="1" max="99" class="w-10 h-full text-center font-extrabold text-xs bg-transparent border-0 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                                        <button type="button" onclick="incrementQty({{ $menu->id }})" class="w-7 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 font-bold transition text-sm">
-                                            +
-                                        </button>
-                                    </div>
+                            <!-- State 1: Belum Ditambahkan (Qty == 0) -->
+                            <div id="btn-add-wrap-{{ $menu->id }}" class="{{ $initialQty > 0 ? 'hidden' : 'block' }}">
+                                <button type="button" onclick="handleQuickAdd({{ $menu->id }})"
+                                        class="w-full bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm hover:shadow-md active:scale-95">
+                                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <span>Tambah</span>
+                                </button>
+                            </div>
 
-                                    <!-- Add Button -->
-                                    <button type="submit" class="flex-1 bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider h-10 px-3 rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm hover:shadow-md">
-                                        <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                        </svg>
-                                        <span>Pesan</span>
-                                    </button>
-                                </div>
-                            </form>
+                            <!-- State 2: Sudah Dipilih (Qty > 0) -->
+                            <div id="counter-wrap-{{ $menu->id }}" class="{{ $initialQty > 0 ? 'flex' : 'hidden' }} items-center justify-between border-2 border-amber-500 bg-amber-50/70 rounded-xl px-2 py-1 h-11 transition shadow-sm">
+                                <button type="button" onclick="handleChangeQty({{ $menu->id }}, -1)"
+                                        class="w-8 h-8 rounded-lg bg-black hover:bg-neutral-800 text-white flex items-center justify-center font-bold text-base transition active:scale-90"
+                                        aria-label="Kurangi porsi">
+                                    &minus;
+                                </button>
+                                <span id="qty-text-{{ $menu->id }}" class="font-extrabold text-sm text-gray-900 px-3">
+                                    {{ $initialQty }}
+                                </span>
+                                <button type="button" onclick="handleChangeQty({{ $menu->id }}, 1)"
+                                        class="w-8 h-8 rounded-lg bg-black hover:bg-neutral-800 text-white flex items-center justify-center font-bold text-base transition active:scale-90"
+                                        aria-label="Tambah porsi">
+                                    +
+                                </button>
+                            </div>
                         @else
                             <button disabled class="w-full bg-gray-200 text-gray-400 font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl cursor-not-allowed">
                                 Menu Tidak Tersedia
@@ -156,51 +204,143 @@
     </div>
 </section>
 
-<!-- Sticky Bottom Cart Bar (if cart has items) -->
-@php
-    $cartSession = session()->get('cart', []);
-    $cartTotalQty = array_sum(array_column($cartSession, 'quantity'));
-    $cartTotalHarga = 0;
-    foreach($cartSession as $c) {
-        $cartTotalHarga += $c['harga'] * $c['quantity'];
-    }
-@endphp
-
-@if($cartTotalQty > 0)
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-xl">
+<!-- Floating Black & Yellow Cart Bar -->
+<div id="floating-cart-bar"
+     class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-xl transition-all duration-300 transform {{ $cartTotalQty > 0 ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-28 opacity-0 pointer-events-none' }}">
     <div class="bg-black/95 backdrop-blur-md text-white rounded-2xl p-4 sm:p-5 shadow-2xl border border-neutral-700 flex items-center justify-between gap-4">
+        <!-- Left: Yellow Total Quantity Badge & Text Details -->
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center font-extrabold text-sm flex-shrink-0">
+            <div id="bar-total-qty" class="w-10 h-10 bg-amber-500 text-black rounded-xl flex items-center justify-center font-extrabold text-base flex-shrink-0 shadow">
                 {{ $cartTotalQty }}
             </div>
-            <div>
-                <span class="text-xs text-gray-300 block font-semibold uppercase">Keranjang Anda ({{ count($cartSession) }} Menu)</span>
-                <span class="text-sm sm:text-base font-extrabold text-amber-400">
+            <div class="leading-tight">
+                <span class="text-[11px] text-gray-300 block font-semibold uppercase tracking-wider">
+                    KERANJANG ANDA (<span id="bar-menu-count">{{ count($initialCartMap) }}</span> MENU)
+                </span>
+                <span id="bar-total-price" class="text-sm sm:text-base font-extrabold text-amber-400">
                     Rp {{ number_format($cartTotalHarga, 0, ',', '.') }}
                 </span>
             </div>
         </div>
-        <a href="{{ route('cart.index') }}" class="bg-amber-500 hover:bg-amber-600 text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider py-2.5 px-5 rounded-xl transition flex items-center space-x-1.5 whitespace-nowrap shadow">
-            <span>Lihat & Checkout &rarr;</span>
-        </a>
+
+        <!-- Right: Checkout Button -->
+        <form id="form-go-checkout" action="{{ route('cart.sync') }}" method="POST">
+            @csrf
+            <input type="hidden" name="items" id="hidden-cart-items" value="{{ json_encode($initialCartMap) }}">
+            <button type="submit"
+                    class="bg-amber-500 hover:bg-amber-600 active:scale-95 text-black font-extrabold text-xs sm:text-sm uppercase tracking-wider py-3 px-5 rounded-xl transition flex items-center space-x-1.5 whitespace-nowrap shadow-md hover:shadow-lg">
+                <span>LIHAT & CHECKOUT &rarr;</span>
+            </button>
+        </form>
     </div>
 </div>
-@endif
 
 <script>
-function incrementQty(id) {
-    const input = document.getElementById('qty-' + id);
-    if (input) {
-        let val = parseInt(input.value) || 1;
-        input.value = Math.min(val + 1, 99);
+    // State of selected menus: { [menuId]: quantity }
+    const cartState = @json($initialCartMap);
+    const menuPrices = @json($menuPriceMap);
+    const syncUrl = "{{ route('cart.sync') }}";
+    const csrfToken = "{{ csrf_token() }}";
+    let syncTimeout = null;
+
+    function formatRupiah(number) {
+        return 'Rp ' + Number(number).toLocaleString('id-ID');
     }
-}
-function decrementQty(id) {
-    const input = document.getElementById('qty-' + id);
-    if (input) {
-        let val = parseInt(input.value) || 1;
-        input.value = Math.max(val - 1, 1);
+
+    function handleQuickAdd(menuId) {
+        cartState[menuId] = 1;
+        updateCardUI(menuId, 1);
+        recalculateAndRenderBar();
+        debounceServerSync();
     }
-}
+
+    function handleChangeQty(menuId, delta) {
+        let currentQty = cartState[menuId] || 0;
+        currentQty += delta;
+
+        if (currentQty <= 0) {
+            delete cartState[menuId];
+            updateCardUI(menuId, 0);
+        } else {
+            cartState[menuId] = Math.min(currentQty, 99);
+            updateCardUI(menuId, cartState[menuId]);
+        }
+
+        recalculateAndRenderBar();
+        debounceServerSync();
+    }
+
+    function updateCardUI(menuId, qty) {
+        const btnAdd = document.getElementById('btn-add-wrap-' + menuId);
+        const counter = document.getElementById('counter-wrap-' + menuId);
+        const textQty = document.getElementById('qty-text-' + menuId);
+
+        if (!btnAdd || !counter) return;
+
+        if (qty > 0) {
+            btnAdd.classList.add('hidden');
+            counter.classList.remove('hidden');
+            counter.classList.add('flex');
+            if (textQty) textQty.innerText = qty;
+        } else {
+            counter.classList.add('hidden');
+            counter.classList.remove('flex');
+            btnAdd.classList.remove('hidden');
+            btnAdd.classList.add('block');
+        }
+    }
+
+    function recalculateAndRenderBar() {
+        let totalQty = 0;
+        let totalPrice = 0;
+        let menuCount = 0;
+
+        for (const [id, qty] of Object.entries(cartState)) {
+            const count = parseInt(qty) || 0;
+            if (count > 0) {
+                menuCount++;
+                totalQty += count;
+                const price = parseFloat(menuPrices[id]) || 0;
+                totalPrice += count * price;
+            }
+        }
+
+        const bar = document.getElementById('floating-cart-bar');
+        const badgeQty = document.getElementById('bar-total-qty');
+        const badgeMenu = document.getElementById('bar-menu-count');
+        const badgePrice = document.getElementById('bar-total-price');
+        const hiddenInput = document.getElementById('hidden-cart-items');
+
+        if (badgeQty) badgeQty.innerText = totalQty;
+        if (badgeMenu) badgeMenu.innerText = menuCount;
+        if (badgePrice) badgePrice.innerText = formatRupiah(totalPrice);
+        if (hiddenInput) hiddenInput.value = JSON.stringify(cartState);
+
+        // Animate floating bar in/out
+        if (bar) {
+            if (totalQty > 0) {
+                bar.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
+                bar.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            } else {
+                bar.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                bar.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
+            }
+        }
+    }
+
+    function debounceServerSync() {
+        if (syncTimeout) clearTimeout(syncTimeout);
+        syncTimeout = setTimeout(() => {
+            fetch(syncUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ items: cartState })
+            }).catch(err => console.error('Auto-sync error:', err));
+        }, 300);
+    }
 </script>
 @endsection

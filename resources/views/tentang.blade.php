@@ -21,20 +21,20 @@
             <div class="reveal-on-scroll">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase mb-4">TASTY FOOD</h2>
                 <p class="font-bold text-black text-xs sm:text-sm leading-relaxed mb-4">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo, dui diam convallis arcu, eget consectetur ex sem eget lacus. Nullam vitae dignissim neque, vel luctus ex. Fusce sit amet viverra ante.
+                    Tasty Food hadir untuk menghadirkan kelezatan masakan khas Indonesia dengan cita rasa autentik dan kualitas terbaik. Setiap hidangan diolah menggunakan bahan-bahan segar serta rempah pilihan untuk menciptakan rasa yang lezat dan menggugah selera.
                 </p>
                 <p class="text-gray-500 text-xs sm:text-sm leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ornare, augue eu rutrum commodo, dui diam convallis arcu, eget consectetur ex sem eget lacus. Nullam vitae dignissim neque, vel luctus ex. Fusce sit amet viverra ante.
+                    Kami percaya bahwa makanan bukan sekadar pengisi perut, tetapi juga bagian dari budaya dan kebersamaan. Dengan resep turun-temurun yang dipadukan dengan standar kebersihan modern, Tasty Food selalu siap menyajikan makanan lezat untuk menemani setiap momen istimewa Anda.
                 </p>
             </div>
 
             <!-- Right Images -->
             <div class="grid grid-cols-2 gap-4 sm:gap-6 reveal-on-scroll delay-100">
                 <div class="rounded-2xl overflow-hidden shadow-md h-72 sm:h-96">
-                    <img src="{{ asset('assets/brooke-lark-1Rm9GLHV0UA-unsplash.jpg') }}" alt="Tasty Food Dish" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                    <img src="{{ asset('assets/images/foods/rendang.webp') }}" alt="Rendang Sapi" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
                 <div class="rounded-2xl overflow-hidden shadow-md h-72 sm:h-96">
-                    <img src="{{ asset('assets/michele-blackwell-rAyCBQTH7ws-unsplash.jpg') }}" alt="Chef Plating" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                    <img src="{{ asset('assets/images/foods/sate.webp') }}" alt="Sate Ayam" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -48,10 +48,10 @@
             <!-- Left Images -->
             <div class="grid grid-cols-2 gap-4 sm:gap-6 order-2 md:order-1 reveal-on-scroll">
                 <div class="aspect-square rounded-2xl overflow-hidden shadow-md">
-                    <img src="{{ asset('assets/jimmy-dean-Jvw3pxgeiZw-unsplash.jpg') }}" alt="Table Spread" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                    <img src="{{ asset('storage/galeri_images/tEnDEM8LtIFpU77XC6KyF7okstsAGhRhifeTsSFY.jpg') }}" alt="Tumpeng Kuning" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
                 <div class="aspect-square rounded-2xl overflow-hidden shadow-md">
-                    <img src="{{ asset('assets/img-3.png') }}" alt="Ramen Dish" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                    <img src="{{ asset('storage/galeri_images/gZdNq9JGeVHkfJ63bTtmmfifB8qftzsUSaPAs7tk.jpg') }}" alt="Mie Yamin" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
             </div>
 
@@ -59,7 +59,7 @@
             <div class="order-1 md:order-2 reveal-on-scroll delay-100">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase mb-4">VISI</h2>
                 <p class="text-gray-500 text-xs sm:text-sm leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce scelerisque magna aliquet cursus tempus. Duis viverra metus et turpis elementum elementum. Aliquam rutrum placerat tellus et suscipit. Curabitur facilisis lectus vitae eros malesuada eleifend. Mauris eget tellus odio. Phasellus vestibulum turpis ac sem commodo, at posuere eros consequat. Duis nec ea at ante volutpat posuere. Morbi vel nunc tortor. Nulla facilisi. Nulla accumsan ullamcorper purus nec venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer imperdiet erat vel leo rutrum lobortis.
+                    Menjadi restoran kuliner Nusantara pilihan utama yang dikenal karena keaslian cita rasa, kualitas bahan premium, dan pelayanan ramah, serta turut melestarikan dan memperkenalkan kekayaan kuliner tradisional Indonesia kepada seluruh kalangan masyarakat luas dan generasi muda.
                 </p>
             </div>
         </div>
@@ -74,14 +74,17 @@
             <div class="reveal-on-scroll">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-black uppercase mb-4">MISI</h2>
                 <p class="text-gray-500 text-xs sm:text-sm leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce scelerisque magna aliquet cursus tempus. Duis viverra metus et turpis elementum elementum. Aliquam rutrum placerat tellus et suscipit. Curabitur facilisis lectus vitae eros malesuada eleifend. Mauris eget tellus odio. Phasellus vestibulum turpis ac sem commodo, at posuere eros consequat. Duis nec ea at ante volutpat posuere. Morbi vel nunc tortor. Nulla facilisi. Nulla accumsan ullamcorper purus nec venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer imperdiet erat vel leo rutrum lobortis.
+                    1. Menyajikan hidangan khas Nusantara dengan resep autentik dan bumbu rempah alami pilihan berkualitas.<br><br>
+                    2. Menjaga higienitas dan standar mutu pangan dalam setiap proses pengolahan bahan hingga ke meja saji.<br><br>
+                    3. Memberikan pelayanan bersahabat dan suasana santap yang nyaman bagi setiap pengunjung.<br><br>
+                    4. Terus berinovasi dalam penyajian tanpa menghilangkan nilai tradisi rasa asli Indonesia.
                 </p>
             </div>
 
             <!-- Right Image -->
             <div class="reveal-on-scroll delay-100">
                 <div class="rounded-2xl overflow-hidden shadow-md h-60 sm:h-72 w-full">
-                    <img src="{{ asset('assets/brooke-lark-oaz0raysASk-unsplash.jpg') }}" alt="Misi Food" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                    <img src="{{ asset('storage/berita_images/0OrgHcMCuu8sK3FMmDfr61o8xqKjZPmiqTzFW5HV.webp') }}" alt="Nasi Uduk" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>

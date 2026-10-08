@@ -20,6 +20,52 @@
 <section class="py-14 sm:py-20 bg-[#F9F9F9]">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
+        @auth
+        <!-- User Account Badge Banner -->
+        <div class="mb-8 p-5 bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-black flex items-center justify-center text-lg font-black uppercase shadow-xs">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-gray-900 flex items-center gap-2">
+                        <span>{{ auth()->user()->name }}</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase">Akun Terhubung</span>
+                    </h3>
+                    <p class="text-xs text-gray-500">{{ auth()->user()->email }} &bull; Menampilkan riwayat pesanan akun Anda</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('menu') }}" class="bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl transition shadow-xs">
+                    + Pesan Menu Baru
+                </a>
+            </div>
+        </div>
+        @else
+        <!-- Guest Notification Banner -->
+        <div class="mb-8 p-5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl border border-amber-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-500 text-black flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-xs sm:text-sm font-extrabold text-gray-900">Ingin Riwayat Pesanan Anda Tersimpan Otomatis?</h3>
+                    <p class="text-[11px] sm:text-xs text-gray-600 mt-0.5">Masuk ke akun Anda agar seluruh pesanan tersimpan rapi dan dapat dipantau dari perangkat mana pun.</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0">
+                <a href="{{ route('login') }}" class="bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl transition shadow-xs">
+                    Masuk
+                </a>
+                <a href="{{ route('register') }}" class="bg-amber-500 hover:bg-amber-600 text-black font-extrabold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl transition shadow-xs">
+                    Daftar
+                </a>
+            </div>
+        </div>
+        @endauth
+
         <!-- Search Box -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 mb-10">
             <h2 class="text-sm sm:text-base font-extrabold text-gray-900 uppercase mb-2">
@@ -100,6 +146,9 @@
                             <span class="text-lg sm:text-xl font-extrabold text-amber-600 block">
                                 {{ $ord->formatted_total }}
                             </span>
+                            <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full {{ $ord->status_pembayaran === 'lunas' ? 'bg-emerald-100 text-emerald-800' : ($ord->status_pembayaran === 'menunggu_verifikasi' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700') }} mt-1">
+                                {{ $ord->metode_pembayaran ?? 'COD' }} ({{ $ord->status_pembayaran_label }})
+                            </span>
                             @if($ord->rating)
                                 <div class="mt-1 text-amber-400 text-xs font-bold">
                                     @for($i = 1; $i <= 5; $i++)
@@ -151,8 +200,10 @@
                 <p class="text-xs sm:text-sm text-gray-500 max-w-md mx-auto mb-6">
                     @if($search)
                         Tidak ditemukan pesanan dengan pencarian "<span class="font-bold text-gray-800">{{ $search }}</span>". Pastikan kode pesanan atau nomor WhatsApp yang Anda masukkan sudah sesuai.
+                    @elseif(auth()->check())
+                        Halo <span class="font-bold text-gray-800">{{ auth()->user()->name }}</span>, Anda belum memiliki riwayat pesanan yang terhubung. Mulai pesan makanan lezat favorit Anda sekarang!
                     @else
-                        Anda belum melakukan pemesanan makanan melalui browser ini. Silakan cari menggunakan nomor telepon Anda di atas atau buat pesanan baru.
+                        Anda belum melakukan pemesanan makanan melalui browser ini. Silakan masuk ke akun Anda atau mulai pesan makanan baru.
                     @endif
                 </p>
                 <a href="{{ route('menu') }}" class="inline-block bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition shadow">

@@ -1,53 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Tasty Food</title>
+    <title>Login - Admin Tasty Food</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        body {
+            font-family: 'Public Sans', sans-serif;
+            background: linear-gradient(135deg, #1a2035 0%, #121624 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .login-header {
+            padding: 30px 30px 10px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 20px 30px 35px;
+        }
     </style>
 </head>
-<body class="bg-black text-gray-200 antialiased min-h-screen flex items-center justify-center">
+<body>
 
-    <div class="w-full max-w-md p-8 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-amber-500 tracking-wider uppercase mb-2">Tasty Food</h1>
-            <p class="text-gray-400">Admin Login</p>
+    <div class="login-card">
+        <div class="login-header">
+            <h2 class="fw-bold mb-1 text-dark">
+                <span class="text-warning">Tasty</span> Food
+            </h2>
+            <h5 class="text-secondary fw-semibold">Admin Login</h5>
+            <p class="text-muted small">Silakan masuk ke akun admin Anda</p>
         </div>
 
-        @if($errors->any())
-            <div class="mb-6 bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded relative" role="alert">
-                <ul class="list-disc list-inside text-sm">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="login-body">
+            @if($errors->any())
+                <div class="alert alert-danger py-2 px-3 small" role="alert">
+                    <ul class="mb-0 ps-3">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <form method="POST" action="{{ route('admin.login.submit') }}">
-            @csrf
+            <form method="POST" action="{{ route('admin.login.submit') }}">
+                @csrf
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold small text-secondary">Email atau Username</label>
+                    <input type="text" name="email" id="email" class="form-control" value="{{ old('email', 'admin@tastyfood.com') }}" placeholder="admin@tastyfood.com" autofocus required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-bold small text-secondary">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <div class="mb-4 form-check">
+                    <input type="checkbox" name="remember" class="form-check-input" id="remember" checked>
+                    <label class="form-check-label small text-muted" for="remember">Ingat Saya</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                    MASUK
+                </button>
+            </form>
             
-            <div class="mb-6">
-                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                <input type="password" name="password" id="password" required
-                    class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-white placeholder-gray-500" 
-                    placeholder="Enter admin password">
+            <div class="mt-4 text-center">
+                <a href="{{ route('home') }}" class="text-decoration-none small text-muted">
+                    &larr; Kembali ke Website
+                </a>
             </div>
-
-            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-black font-semibold py-3 px-4 rounded-lg transition-colors">
-                MASUK
-            </button>
-        </form>
-        
-        <div class="mt-8 text-center text-sm text-gray-500">
-            <a href="{{ route('home') }}" class="hover:text-amber-500 transition-colors">&larr; Kembali ke Website</a>
         </div>
     </div>
 

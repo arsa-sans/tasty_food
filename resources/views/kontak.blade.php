@@ -21,7 +21,7 @@
         <div class="border border-gray-300 rounded-3xl p-6 sm:p-10 shadow-sm reveal-on-scroll delay-100">
             @if(session('success'))
             <div class="mb-6 bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded-xl flex items-center">
-                <svg class="w-5 h-5 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-5 h-5 mr-2 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                 </svg>
                 <span class="text-sm font-medium">{{ session('success') }}</span>
@@ -34,14 +34,14 @@
                     <!-- Left Column -->
                     <div class="flex flex-col gap-5">
                         <div>
-                            <input type="text" name="phone" placeholder="Telepon" value="{{ old('phone') }}" required
+                            <input type="text" name="subjek" placeholder="Subject" value="{{ old('subjek') }}" required
                                 class="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition">
-                            @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            @error('subjek')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <input type="text" name="name" placeholder="Nama" value="{{ old('name') }}" required
+                            <input type="text" name="nama" placeholder="Name" value="{{ old('nama') }}" required
                                 class="w-full border border-gray-300 rounded-xl px-4 py-3.5 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm transition">
-                            @error('name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            @error('nama')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required
@@ -52,16 +52,16 @@
 
                     <!-- Right Column -->
                     <div class="h-full flex flex-col">
-                        <textarea name="message" placeholder="Message" required
-                            class="w-full h-full min-h-[170px] border border-gray-300 rounded-xl px-4 py-3.5 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm resize-none transition">{{ old('message') }}</textarea>
-                        @error('message')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <textarea name="pesan" placeholder="Message" required
+                            class="w-full h-full min-h-[170px] border border-gray-300 rounded-xl px-4 py-3.5 focus:outline-none focus:border-black focus:ring-1 focus:ring-black text-sm resize-none transition">{{ old('pesan') }}</textarea>
+                        @error('pesan')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="mt-6">
                     <button type="submit" class="w-full bg-black hover:bg-neutral-800 text-white font-bold py-4 rounded-xl uppercase tracking-wider transition text-sm shadow-md">
-                        KIRIM
+                        KIRIM PESAN
                     </button>
                 </div>
             </form>
@@ -79,7 +79,7 @@
                     <img src="{{ asset('assets/Group 66.png') }}" alt="Email Icon" class="w-full h-full object-contain">
                 </div>
                 <h3 class="font-extrabold text-sm sm:text-base text-black uppercase mb-1">EMAIL</h3>
-                <p class="text-gray-500 text-xs sm:text-sm">tastyfood@gmail.com</p>
+                <p class="text-gray-500 text-xs sm:text-sm">admin@tastyfood.com</p>
             </div>
 
             <!-- Phone -->
@@ -88,7 +88,7 @@
                     <img src="{{ asset('assets/Group 67.png') }}" alt="Phone Icon" class="w-full h-full object-contain">
                 </div>
                 <h3 class="font-extrabold text-sm sm:text-base text-black uppercase mb-1">PHONE</h3>
-                <p class="text-gray-500 text-xs sm:text-sm">+62 812 3456 7890</p>
+                <p class="text-gray-500 text-xs sm:text-sm">+62 812-3456-7890</p>
             </div>
 
             <!-- Location -->
@@ -97,25 +97,19 @@
                     <img src="{{ asset('assets/Group 68.png') }}" alt="Location Icon" class="w-full h-full object-contain">
                 </div>
                 <h3 class="font-extrabold text-sm sm:text-base text-black uppercase mb-1">LOCATION</h3>
-                <p class="text-gray-500 text-xs sm:text-sm">Kota Bandung, Jawa Barat</p>
+                <p class="text-gray-500 text-xs sm:text-sm">CyberLabs, Kota Bandung</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Map Section -->
-<section class="pb-20 sm:pb-28 bg-white">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 reveal-on-scroll">
-        <div class="rounded-3xl overflow-hidden shadow-sm border border-gray-200">
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.6091244304!2d107.57311652431252!3d-6.903429015182967!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1714571822830!5m2!1sen!2sid" 
-                width="100%" 
-                height="400" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade"
-                class="w-full h-[320px] sm:h-[400px]">
+<!-- Maps Section -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="rounded-3xl overflow-hidden shadow-lg h-96 w-full">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d990.1397016964295!2d107.66334356955295!3d-6.943211399566049!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7c381e3c323%3A0x5f5160f6c9796e4b!2sCYBERLABS%20-%20Jasa%20Digital%20Marketing%20%7C%20Jasa%20Pembuatan%20Website%20%7C%20Jasa%20Pembuatan%20Aplikasi!5e0!3m2!1sid!2sid!4v1772864065271!5m2!1sid!2sid"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
             </iframe>
         </div>
     </div>

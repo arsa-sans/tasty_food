@@ -3,9 +3,6 @@
 @section('title', 'Status Pesanan ' . $order->order_code . ' - Tasty Food')
 
 @section('content')
-<!-- Leaflet Map CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-
 <!-- Hero Section -->
 <section class="relative w-full h-[320px] sm:h-[380px] bg-cover bg-center flex items-end" style="background-image: url('{{ asset('assets/Group 70.png') }}');">
     <!-- Dark Overlay -->
@@ -285,6 +282,67 @@
                     </div>
                 </div>
 
+                <!-- Payment Information & Proof -->
+                <div class="mt-6 pt-5 border-t border-gray-100">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Informasi Pembayaran</h4>
+                    <div class="p-4 rounded-2xl bg-gray-50 border border-gray-100 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-600 font-semibold">Metode:</span>
+                            <span class="text-xs font-bold text-gray-900 flex items-center gap-1.5">
+                                @if($order->tipe_pembayaran === 'cash')
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                @elseif($order->tipe_pembayaran === 'e_wallet')
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                @else
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                @endif
+                                {{ $order->metode_pembayaran ?? 'Cash On Delivery' }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-600 font-semibold">Status Pembayaran:</span>
+                            <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full {{ $order->status_pembayaran === 'lunas' ? 'bg-emerald-100 text-emerald-800' : ($order->status_pembayaran === 'menunggu_verifikasi' ? 'bg-amber-100 text-amber-800' : ($order->status_pembayaran === 'ditolak' ? 'bg-rose-100 text-rose-800' : 'bg-gray-200 text-gray-800')) }}">
+                                {{ $order->status_pembayaran_label }}
+                            </span>
+                        </div>
+
+                        @if($order->paymentMethod && $order->paymentMethod->nomor_rekening && $order->tipe_pembayaran !== 'cash')
+                        <div class="p-3 rounded-xl bg-white border border-gray-200/80 flex items-center justify-between gap-2">
+                            <div>
+                                <span class="text-[10px] text-gray-400 uppercase font-bold block">
+                                    {{ $order->tipe_pembayaran === 'e_wallet' ? 'No. HP / Akun E-Wallet:' : 'No. Rekening Restoran:' }}
+                                </span>
+                                <span class="text-sm font-extrabold text-gray-900 font-mono tracking-wider">
+                                    {{ $order->paymentMethod->nomor_rekening }}
+                                </span>
+                                @if($order->paymentMethod->atas_nama)
+                                    <span class="text-[11px] text-gray-500 block">a.n. {{ $order->paymentMethod->atas_nama }}</span>
+                                @endif
+                            </div>
+                            <button type="button" onclick="navigator.clipboard.writeText('{{ $order->paymentMethod->nomor_rekening }}'); this.innerText='Tersalin!'; setTimeout(()=>this.innerText='Salin', 2000);" class="text-xs font-bold text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 transition flex-shrink-0 cursor-pointer">
+                                Salin
+                            </button>
+                        </div>
+                        @endif
+
+                        @if($order->bukti_pembayaran_url)
+                        <div class="pt-2 border-t border-gray-200/60">
+                            <span class="text-[11px] font-bold text-gray-500 block mb-1.5">Bukti Transfer (Screenshot):</span>
+                            <a href="{{ $order->bukti_pembayaran_url }}" target="_blank" class="inline-block relative group">
+                                <img src="{{ $order->bukti_pembayaran_url }}" alt="Bukti Pembayaran" class="h-28 rounded-xl object-contain border border-gray-200 bg-white p-1 group-hover:opacity-90 transition shadow-xs">
+                                <span class="block text-[10px] text-amber-600 group-hover:underline font-semibold mt-1">
+                                    Lihat Screenshot Lengkap &rarr;
+                                </span>
+                            </a>
+                        </div>
+                        @elseif($order->tipe_pembayaran === 'cash')
+                        <div class="text-[11px] text-gray-500 bg-white p-2.5 rounded-xl border border-gray-100">
+                            Bayar tunai kepada kurir saat makanan tiba di alamat Anda.
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
                 @if($order->catatan)
                 <div class="mt-6 pt-4 border-t border-gray-100">
                     <span class="text-xs text-gray-400 uppercase font-bold block mb-1">Catatan Anda:</span>
@@ -332,7 +390,17 @@
                     <span class="text-xs uppercase tracking-wider text-gray-400 font-bold block mb-2">
                         Titik Lokasi Pengantaran (Google Maps)
                     </span>
-                    <div id="order-map" class="h-48 w-full rounded-2xl overflow-hidden border border-gray-200 shadow-inner z-10"></div>
+                    <div class="h-56 w-full rounded-2xl overflow-hidden border border-gray-200 shadow-inner z-10 bg-gray-100">
+                        <iframe
+                            src="https://maps.google.com/maps?q={{ $order->latitude }},{{ $order->longitude }}&hl=id&z=16&output=embed"
+                            width="100%"
+                            height="100%"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
                     <div class="mt-2 text-right">
                         <a href="{{ $order->google_maps_url }}" target="_blank" class="text-xs font-bold text-amber-600 hover:text-amber-700 uppercase inline-flex items-center space-x-1">
                             <span>Buka di Google Maps</span>
@@ -362,20 +430,6 @@
 
     </div>
 </section>
-
-@if($order->latitude && $order->longitude)
-<!-- Leaflet Map JS for Preview -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const lat = {{ $order->latitude }};
-        const lng = {{ $order->longitude }};
-        const map = L.map('order-map', { zoomControl: false }).setView([lat, lng], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-        L.marker([lat, lng]).addTo(map).bindPopup('<b>Lokasi Pengantaran:</b><br>{{ addslashes($order->nama_pelanggan) }}').openPopup();
-    });
-</script>
-@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
