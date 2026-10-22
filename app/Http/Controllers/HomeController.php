@@ -9,13 +9,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // 5 latest published articles for the Home news section (1 featured + 4 grid)
         $beritas = Berita::published()->latest('tanggal')->take(5)->get();
 
-        // 6 latest galleries for the Home gallery section
         $galeris = Galeri::latest()->take(6)->get();
 
-        // 4 signature dishes for the floating cards under Tentang Kami
         $signatureDishes = Berita::published()
             ->whereIn('slug', [
                 'menjelajahi-nasi-goreng-sejarah-ciri-khas-dan-ragam-kuliner-favorit-dunia',
@@ -25,7 +22,6 @@ class HomeController extends Controller
             ])
             ->get();
 
-        // Fallback to any 4 published articles if specific slugs not found
         if ($signatureDishes->count() < 4) {
             $signatureDishes = Berita::published()->latest('tanggal')->take(4)->get();
         }
