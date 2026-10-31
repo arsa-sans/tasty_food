@@ -35,17 +35,11 @@ class PaymentMethodController extends Controller
         return view('admin.payment-methods.index', compact('paymentMethods'));
     }
 
-    /**
-     * Show the form for creating a new payment method.
-     */
     public function create()
     {
         return view('admin.payment-methods.create');
     }
 
-    /**
-     * Store a newly created payment method in storage.
-     */
     public function store(Request $request)
     {
         // Hanya nama dan tipe yang wajib, sisanya opsional sesuai permintaan user
@@ -97,9 +91,6 @@ class PaymentMethodController extends Controller
             ->with('success', "Metode pembayaran '{$validated['nama']}' berhasil ditambahkan!");
     }
 
-    /**
-     * Show the form for editing the specified payment method.
-     */
     public function edit(PaymentMethod $paymentMethod)
     {
         return view('admin.payment-methods.edit', compact('paymentMethod'));
@@ -158,9 +149,6 @@ class PaymentMethodController extends Controller
             ->with('success', "Metode pembayaran '{$paymentMethod->nama}' berhasil diperbarui!");
     }
 
-    /**
-     * Remove the specified payment method from storage.
-     */
     public function destroy(PaymentMethod $paymentMethod)
     {
         $nama = $paymentMethod->nama;
