@@ -13,9 +13,7 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    /**
-     * Display the public menu page for ordering food.
-     */
+
     public function menu(Request $request)
     {
         $query = Menu::query()->tersedia();
@@ -37,9 +35,6 @@ class OrderController extends Controller
         return view('menu', compact('menus', 'categories'));
     }
 
-    /**
-     * Display the checkout page.
-     */
     public function checkout()
     {
         $cart = session()->get('cart', []);
@@ -59,9 +54,6 @@ class OrderController extends Controller
         return view('checkout', compact('cart', 'total', 'paymentMethods', 'user'));
     }
 
-    /**
-     * Store the customer order.
-     */
     public function store(Request $request)
     {
         $cart = session()->get('cart', []);
@@ -87,7 +79,6 @@ class OrderController extends Controller
             'payment_method_id' => 'required|exists:payment_methods,id',
         ];
 
-        // Conditional validation: if e_wallet or bank, proof upload is required
         if ($paymentMethod && $paymentMethod->tipe !== 'cash') {
             $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg,webp|max:5120';
         } else {
@@ -113,7 +104,6 @@ class OrderController extends Controller
             $totalHarga += $item['harga'] * $item['quantity'];
         }
 
-        // Handle screenshot / proof upload
         $buktiPath = null;
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
@@ -175,7 +165,6 @@ class OrderController extends Controller
             ]);
         }
 
-        // Clear cart session and record to customer's order history
         session()->forget('cart');
         session()->push('order_history', $order->order_code);
 
@@ -183,9 +172,6 @@ class OrderController extends Controller
             ->with('success', "Pesanan Anda berhasil dibuat! Kode Pesanan Anda: {$order->order_code}. Mohon simpan kode ini.");
     }
 
-    /**
-     * Track order status by order code.
-     */
     public function track($order_code)
     {
         $order = Order::with(['items', 'paymentMethod'])->where('order_code', $order_code)->firstOrFail();
@@ -193,9 +179,6 @@ class OrderController extends Controller
         return view('order-track', compact('order'));
     }
 
-    /**
-     * Search order code form submission.
-     */
     public function trackSearch(Request $request)
     {
         $request->validate([
@@ -212,9 +195,6 @@ class OrderController extends Controller
         return redirect()->route('order.track', $order->order_code);
     }
 
-    /**
-     * Customer confirms receiving the order and leaves rating & review.
-     */
     public function confirmReceived(Request $request, $order_code)
     {
         $order = Order::where('order_code', $order_code)->firstOrFail();
@@ -239,9 +219,6 @@ class OrderController extends Controller
             ->with('success', 'Terima kasih banyak! Konfirmasi penerimaan pesanan dan ulasan rating Anda telah berhasil kami terima.');
     }
 
-    /**
-     * Customer Order History page with search and status detail link.
-     */
     public function history(Request $request)
     {
         $search = trim($request->input('search', ''));
