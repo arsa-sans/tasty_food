@@ -10,9 +10,6 @@ use Illuminate\Support\Str;
 
 class PaymentMethodController extends Controller
 {
-    /**
-     * Display a listing of payment methods.
-     */
     public function index(Request $request)
     {
         $query = PaymentMethod::query();
@@ -96,9 +93,6 @@ class PaymentMethodController extends Controller
         return view('admin.payment-methods.edit', compact('paymentMethod'));
     }
 
-    /**
-     * Update the specified payment method in storage.
-     */
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
         $validated = $request->validate([
