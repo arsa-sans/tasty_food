@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserAuthController extends Controller
 {
-    /**
-     * Tampilkan halaman login untuk pengunjung publik.
-     */
     public function showLogin()
     {
         if (Auth::check()) {
@@ -23,10 +20,6 @@ class UserAuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Proses login pengunjung / user.
-     * Hanya membutuhkan input email dan password.
-     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -65,9 +58,6 @@ class UserAuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Tampilkan halaman registrasi untuk pengunjung publik.
-     */
     public function showRegister()
     {
         if (Auth::check()) {
@@ -77,10 +67,6 @@ class UserAuthController extends Controller
         return view('auth.register');
     }
 
-    /**
-     * Proses pendaftaran akun baru pengunjung / user.
-     * Membutuhkan: nama lengkap, email, password, dan konfirmasi password.
-     */
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -120,9 +106,6 @@ class UserAuthController extends Controller
             ->with('success', 'Pendaftaran berhasil! Selamat datang di Tasty Food, ' . $user->name . '!');
     }
 
-    /**
-     * Logout akun user.
-     */
     public function logout(Request $request)
     {
         Auth::logout();
