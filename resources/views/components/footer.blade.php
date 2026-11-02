@@ -67,7 +67,7 @@
         <!-- Copyright -->
         <div class="border-t border-neutral-800 pt-6 text-center">
             <p class="text-gray-500 text-xs">
-                Copyright &copy; {{ date('Y') }} Tasty Food. All rights reserved. Made with ❤️ untuk Masakan Nusantara.
+                Copyright &copy; {{ date('Y') }} Tasty Food. All rights reserved. From Nusantara
             </p>
         </div>
     </div>
