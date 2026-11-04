@@ -7,9 +7,6 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    /**
-     * Display the shopping cart.
-     */
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -21,9 +18,6 @@ class CartController extends Controller
         return view('cart', compact('cart', 'total'));
     }
 
-    /**
-     * Add a menu item to the cart.
-     */
     public function add(Request $request, $menu)
     {
         if (!($menu instanceof Menu)) {
@@ -74,9 +68,6 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', "{$qty} porsi {$menu->nama} berhasil ditambahkan ke keranjang!");
     }
 
-    /**
-     * Update quantity of a cart item.
-     */
     public function update(Request $request, $id)
     {
         $cart = session()->get('cart', []);
@@ -104,9 +95,6 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Keranjang berhasil diperbarui.');
     }
 
-    /**
-     * Remove an item from the cart.
-     */
     public function remove($id)
     {
         $cart = session()->get('cart', []);
@@ -121,18 +109,12 @@ class CartController extends Controller
         return redirect()->route('cart.index');
     }
 
-    /**
-     * Empty the entire cart.
-     */
     public function clear()
     {
         session()->forget('cart');
         return redirect()->route('cart.index')->with('success', 'Keranjang telah dikosongkan.');
     }
 
-    /**
-     * Synchronize entire cart from multi-selection on menu page.
-     */
     public function sync(Request $request)
     {
         $items = $request->input('items', []);
